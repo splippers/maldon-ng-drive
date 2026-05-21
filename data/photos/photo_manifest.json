@@ -1,0 +1,61 @@
+{
+  "_comment": "Historical photo manifest for maldon-ng-drive. Add your photos here. 'file' is relative to data/photos/. Leave 'file' empty if no photo available yet — a placeholder card will be generated.",
+  "_usage": "Run: python3 tools/generate.py  — billboards appear in-game at each GPS location.",
+  "photos": [
+    {
+      "id":       "maldon_east_station_1910",
+      "lat":      51.7314,
+      "lon":      0.6633,
+      "heading":  180,
+      "date":     "c. 1910",
+      "caption":  "Maldon East station looking south from the platform toward the goods shed and engine shed.",
+      "file":     "",
+      "width_m":  5.0,
+      "height_m": 3.5
+    },
+    {
+      "id":       "maldon_east_exterior_1930",
+      "lat":      51.7311,
+      "lon":      0.6628,
+      "heading":  90,
+      "date":     "c. 1930",
+      "caption":  "Station Road entrance to Maldon East. GER station building in red brick with canopy.",
+      "file":     "",
+      "width_m":  5.0,
+      "height_m": 3.5
+    },
+    {
+      "id":       "hythe_quay_1900",
+      "lat":      51.7275,
+      "lon":      0.6730,
+      "heading":  270,
+      "date":     "c. 1900",
+      "caption":  "Maldon Hythe — Thames barges loading at the historic quay. Salt and grain trade.",
+      "file":     "",
+      "width_m":  6.0,
+      "height_m": 3.5
+    },
+    {
+      "id":       "maldon_branch_locomotive_1955",
+      "lat":      51.7380,
+      "lon":      0.6580,
+      "heading":  45,
+      "date":     "c. 1955",
+      "caption":  "BR Standard Class 2 2-6-2T approaching Maldon East on the branch from Witham.",
+      "file":     "",
+      "width_m":  5.0,
+      "height_m": 3.5
+    },
+    {
+      "id":       "langford_halt_1950",
+      "lat":      51.7620,
+      "lon":      0.6399,
+      "heading":  315,
+      "date":     "c. 1950",
+      "caption":  "Langford & Ulting halt — a simple wooden platform on the Maldon branch.",
+      "file":     "",
+      "width_m":  4.0,
+      "height_m": 3.0
+    }
+  ]
+}

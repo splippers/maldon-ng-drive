@@ -1,0 +1,163 @@
+{
+  "_comment": "GER Maldon branch + Dunmow branch trackbed node network. All coordinates in GPS (lat, lon, z_asl_m, width_m). Used by every ng-drive map in the network — each map filters to nodes within its world extent.",
+  "_sources": [
+    "NLS georeferenced 6-inch OS maps 1890s (maps.nls.uk)",
+    "OSM railway=disused / abandoned ways",
+    "Historic England listed building records",
+    "Essex Record Office aerial photography",
+    "Personal field survey 2024"
+  ],
+  "_era": "1900–1950 operational period",
+  "lines": [
+    {
+      "id": "maldon_branch",
+      "name": "GER Maldon Branch",
+      "opened": 1848,
+      "closed_passengers": 1964,
+      "closed_goods": 1966,
+      "operator": "Great Eastern Railway / LNER / BR (Eastern)",
+      "trackbed_width_m": 4.0,
+      "stations": [
+        {
+          "id": "maldon_east",
+          "name": "Maldon East",
+          "lat": 51.7314, "lon": 0.6633,
+          "z_asl": 8.0,
+          "opened": 1848, "closed": 1964,
+          "platform_length_m": 110,
+          "note": "Original GER terminus; engine shed and goods shed on south side."
+        },
+        {
+          "id": "langford_ulting",
+          "name": "Langford & Ulting",
+          "lat": 51.7620, "lon": 0.6399,
+          "z_asl": 18.0,
+          "opened": 1848, "closed": 1964,
+          "platform_length_m": 80,
+          "note": "Unstaffed halt from 1939."
+        },
+        {
+          "id": "witham",
+          "name": "Witham",
+          "lat": 51.7978, "lon": 0.6385,
+          "z_asl": 25.0,
+          "opened": 1843, "closed": null,
+          "platform_length_m": 220,
+          "note": "Junction for Maldon branch (south-east) and Dunmow branch (north-west). Still open on GER main line."
+        }
+      ],
+      "nodes": [
+        [51.7314, 0.6633,  8.0, 4.0],
+        [51.7352, 0.6618, 10.0, 4.0],
+        [51.7401, 0.6589, 13.0, 4.0],
+        [51.7452, 0.6556, 14.5, 4.0],
+        [51.7497, 0.6520, 15.5, 4.0],
+        [51.7540, 0.6494, 17.0, 4.0],
+        [51.7588, 0.6447, 17.5, 4.0],
+        [51.7620, 0.6399, 18.0, 4.0],
+        [51.7658, 0.6392, 18.5, 4.0],
+        [51.7701, 0.6390, 19.0, 4.0],
+        [51.7750, 0.6388, 21.0, 4.0],
+        [51.7810, 0.6386, 23.0, 4.0],
+        [51.7870, 0.6385, 24.5, 4.0],
+        [51.7930, 0.6385, 25.0, 4.0],
+        [51.7978, 0.6385, 25.0, 5.0]
+      ]
+    },
+    {
+      "id": "dunmow_branch",
+      "name": "GER Dunmow Branch (Witham–Felsted–Dunmow)",
+      "opened": 1869,
+      "closed_passengers": 1952,
+      "closed_goods": 1953,
+      "operator": "Great Eastern Railway / LNER / BR (Eastern)",
+      "trackbed_width_m": 4.0,
+      "stations": [
+        {
+          "id": "witham",
+          "name": "Witham",
+          "lat": 51.7978, "lon": 0.6385,
+          "z_asl": 25.0,
+          "opened": 1843, "closed": null,
+          "note": "Shared with Maldon branch."
+        },
+        {
+          "id": "cressing",
+          "name": "Cressing",
+          "lat": 51.8213, "lon": 0.5867,
+          "z_asl": 40.0,
+          "opened": 1869, "closed": 1952,
+          "platform_length_m": 75
+        },
+        {
+          "id": "white_notley",
+          "name": "White Notley",
+          "lat": 51.8307, "lon": 0.5590,
+          "z_asl": 48.0,
+          "opened": 1869, "closed": 1952,
+          "platform_length_m": 75
+        },
+        {
+          "id": "braintree",
+          "name": "Braintree & Bocking",
+          "lat": 51.8786, "lon": 0.5479,
+          "z_asl": 55.0,
+          "opened": 1848, "closed": null,
+          "note": "Still open on surviving Braintree branch."
+        },
+        {
+          "id": "rayne",
+          "name": "Rayne",
+          "lat": 51.8792, "lon": 0.5031,
+          "z_asl": 58.0,
+          "opened": 1869, "closed": 1952,
+          "platform_length_m": 80
+        },
+        {
+          "id": "felsted",
+          "name": "Felsted",
+          "lat": 51.8521, "lon": 0.4268,
+          "z_asl": 54.0,
+          "opened": 1869, "closed": 1952,
+          "platform_length_m": 90,
+          "note": "0.7 km south-west of Felsted School. Station building now a private residence."
+        },
+        {
+          "id": "dunmow",
+          "name": "Dunmow (Great Dunmow)",
+          "lat": 51.8698, "lon": 0.3665,
+          "z_asl": 82.0,
+          "opened": 1869, "closed": 1952,
+          "platform_length_m": 100
+        }
+      ],
+      "nodes": [
+        [51.7978, 0.6385, 25.0, 5.0],
+        [51.8010, 0.6298, 27.0, 4.0],
+        [51.8042, 0.6211, 29.0, 4.0],
+        [51.8074, 0.6124, 31.5, 4.0],
+        [51.8106, 0.6038, 34.0, 4.0],
+        [51.8140, 0.5951, 36.5, 4.0],
+        [51.8175, 0.5908, 39.0, 4.0],
+        [51.8213, 0.5867, 40.0, 4.0],
+        [51.8245, 0.5815, 42.0, 4.0],
+        [51.8268, 0.5730, 44.5, 4.0],
+        [51.8291, 0.5660, 46.5, 4.0],
+        [51.8307, 0.5590, 48.0, 4.0],
+        [51.8450, 0.5560, 51.5, 4.0],
+        [51.8620, 0.5510, 54.0, 4.0],
+        [51.8786, 0.5479, 55.0, 5.0],
+        [51.8792, 0.5310, 56.5, 4.0],
+        [51.8792, 0.5031, 58.0, 4.0],
+        [51.8760, 0.4900, 57.0, 4.0],
+        [51.8680, 0.4700, 56.0, 4.0],
+        [51.8600, 0.4560, 55.0, 4.0],
+        [51.8521, 0.4268, 54.0, 4.0],
+        [51.8510, 0.4100, 56.0, 4.0],
+        [51.8560, 0.3990, 60.0, 4.0],
+        [51.8630, 0.3820, 70.0, 4.0],
+        [51.8698, 0.3665, 82.0, 5.0]
+      ]
+    }
+  ]
+}
