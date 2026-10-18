@@ -50,3 +50,17 @@ SPAWN_POINTS = [
     ("spawn_trackbed_west",    -950, -130,  12.0,   90),  # railway entry ←east (toward Witham)
     ("spawn_langford_road",    -400,  200,  15.0,  180),  # B1018 north, →south
 ]
+
+# ── Spawn labels ──────────────────────────────────────────────────────────────
+# Human-readable names shown in the level-selector spawn menu (info.json).
+# Any spawn without an entry gets a title-cased name derived from its objectname.
+SPAWN_LABELS = {
+    "spawn_station_platform": "Maldon East Station Platform",
+    "spawn_station_approach": "Station Road Approach",
+    "spawn_hythe_quay":       "Hythe Quay (Blackwater)",
+    "spawn_market_hill":      "Market Hill (Town Centre)",
+    "spawn_promenade":        "Promenade Park",
+    "spawn_trackbed_east":    "Trackbed — east end",
+    "spawn_trackbed_west":    "Trackbed — west end (toward Witham)",
+    "spawn_langford_road":    "Langford Road (B1018)",
+}

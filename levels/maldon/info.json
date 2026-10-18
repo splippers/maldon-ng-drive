@@ -1,0 +1,47 @@
+{
+  "name": "Maldon East",
+  "description": "Maldon, Essex — historic market town on the Blackwater Estuary. Home to the Battle of Maldon (991 AD) and the eastern terminus of the GER Maldon branch line (1848–1964). 2 km × 2 km world at 2 m terrain resolution. Features: Maldon East station site, Hythe Quay, River Blackwater, and the trackbed of the former branch line.",
+  "type": "map",
+  "author": "ng-drive-network",
+  "version": "1.0.0",
+  "spawnPoints": [
+    {
+      "name": "Maldon East Station Platform",
+      "objectname": "spawn_station_platform"
+    },
+    {
+      "name": "Station Road Approach",
+      "objectname": "spawn_station_approach"
+    },
+    {
+      "name": "Hythe Quay (Blackwater)",
+      "objectname": "spawn_hythe_quay"
+    },
+    {
+      "name": "Market Hill (Town Centre)",
+      "objectname": "spawn_market_hill"
+    },
+    {
+      "name": "Promenade Park",
+      "objectname": "spawn_promenade"
+    },
+    {
+      "name": "Trackbed — east end",
+      "objectname": "spawn_trackbed_east"
+    },
+    {
+      "name": "Trackbed — west end (toward Witham)",
+      "objectname": "spawn_trackbed_west"
+    },
+    {
+      "name": "Langford Road (B1018)",
+      "objectname": "spawn_langford_road"
+    }
+  ],
+  "previews": [
+    {
+      "title": "Maldon East",
+      "image": "levels/maldon/preview.png"
+    }
+  ]
+}

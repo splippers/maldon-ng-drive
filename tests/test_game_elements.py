@@ -1,6 +1,10 @@
 """
 Tests for OSM tag → BeamNG game-element derivation (tools/game_elements.py).
 
+Map-agnostic: all fixtures are placed relative to whatever map
+map_config.py / tools.constants currently points at, so the same tests
+run unchanged on every map in the ng-drive network.
+
 Covers the tag interpreter, the dual-carriageway pairing heuristic (the
 "highway central reservation" case), linear elements (medians, barriers,
 sidewalks, cycleways) and point furniture (speed signs, lamps, bridges,
@@ -11,6 +15,7 @@ from __future__ import annotations
 
 import pytest
 
+from tools.constants import CENTER_LAT, CENTER_LON, gps_to_world
 from tools.game_elements import (
     DEFAULT_MEDIAN,
     build_game_elements,
@@ -21,7 +26,22 @@ from tools.game_elements import (
 from tools.osm_parse import OsmRoad
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# ── Fixtures, placed relative to the map centre ───────────────────────────────
+
+def _pt(dlat, dlon):
+    return (CENTER_LAT + dlat, CENTER_LON + dlon)
+
+
+def _line(dlat0, dlon0, dlat1, dlon1, n=5):
+    return [_pt(dlat0 + (dlat1 - dlat0) * i / (n - 1),
+                dlon0 + (dlon1 - dlon0) * i / (n - 1)) for i in range(n)]
+
+
+# A ~550 m north-south line through the centre.
+_NORTH_SOUTH = _line(-0.0025, 0.0, 0.0025, 0.0)
+# 0.0002° of longitude ≈ 14 m at UK latitudes.
+_GAP = 0.0002
+
 
 def _road(osm_id, nodes, hw="primary", width=7.0, **tags):
     return OsmRoad(
@@ -33,11 +53,6 @@ def _road(osm_id, nodes, hw="primary", width=7.0, **tags):
         gps_nodes = nodes,
         tags      = {"highway": hw, **tags},
     )
-
-
-def _straight_line(la0, lo0, la1, lo1, n=5):
-    return [(la0 + (la1 - la0) * i / (n - 1),
-             lo0 + (lo1 - lo0) * i / (n - 1)) for i in range(n)]
 
 
 def flat_elev(x, y):        # noqa: ARG001
@@ -88,28 +103,25 @@ class TestRoadSemantics:
 
 class TestEffectiveWidth:
     def test_explicit_width_wins(self):
-        r = _road(1, _straight_line(51.73, 0.66, 51.731, 0.66), width="9.5")
+        r = _road(1, _NORTH_SOUTH, width=9.5)
         assert effective_width(r) == 9.5
 
     def test_lanes_times_lane_width(self):
-        r = _road(1, _straight_line(51.73, 0.66, 51.731, 0.66),
-                  hw="motorway", lanes="4")
+        r = _road(1, _NORTH_SOUTH, hw="motorway", lanes="4")
         assert effective_width(r) == pytest.approx(4 * 3.7)
 
     def test_falls_back_to_hw_width(self):
-        r = _road(1, _straight_line(51.73, 0.66, 51.731, 0.66), hw="secondary")
+        r = _road(1, _NORTH_SOUTH, hw="secondary")
         assert effective_width(r) == 7.0
 
 
 # ── Central reservation pairing ───────────────────────────────────────────────
 
 class TestPairCarriageways:
-    def _dual_pair(self, gap_deg=0.0002):
-        """Two parallel one-way ways ~15 m apart, opposite directions."""
-        # ~0.0002° lon ≈ 14 m at 51.7°N
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660), oneway="yes")
-        b = _road(2, _straight_line(51.735, 0.660 + gap_deg,
-                                    51.730, 0.660 + gap_deg), oneway="yes")
+    def _dual_pair(self, gap=_GAP):
+        """Two parallel one-way ways ~14 m apart, opposite directions."""
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0), oneway="yes")
+        b = _road(2, _line(0.0025, gap, -0.0025, gap), oneway="yes")
         return a, b
 
     def test_pairs_opposing_parallel_oneways(self):
@@ -119,31 +131,31 @@ class TestPairCarriageways:
         assert {pairs[0][0].osm_id, pairs[0][1].osm_id} == {1, 2}
 
     def test_ignores_two_way_roads(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660))
-        b = _road(2, _straight_line(51.735, 0.6602, 51.730, 0.6602))
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0))
+        b = _road(2, _line(0.0025, _GAP, -0.0025, _GAP))
         assert pair_carriageways([a, b]) == []
 
     def test_ignores_same_direction(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660), oneway="yes")
-        b = _road(2, _straight_line(51.730, 0.6602, 51.735, 0.6602), oneway="yes")
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0), oneway="yes")
+        b = _road(2, _line(-0.0025, _GAP, 0.0025, _GAP), oneway="yes")
         assert pair_carriageways([a, b]) == []
 
     def test_ignores_roundabout_arcs(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660),
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0),
                   oneway="yes", junction="roundabout")
-        b = _road(2, _straight_line(51.735, 0.6602, 51.730, 0.6602),
+        b = _road(2, _line(0.0025, _GAP, -0.0025, _GAP),
                   oneway="yes", junction="roundabout")
         assert pair_carriageways([a, b]) == []
 
     def test_ignores_far_apart(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660), oneway="yes")
-        b = _road(2, _straight_line(51.735, 0.664, 51.730, 0.664), oneway="yes")
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0), oneway="yes")
+        b = _road(2, _line(0.0025, 0.004, -0.0025, 0.004), oneway="yes")
         assert pair_carriageways([a, b]) == []
 
     def test_each_way_used_once(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660), oneway="yes")
-        b = _road(2, _straight_line(51.735, 0.6602, 51.730, 0.6602), oneway="yes")
-        c = _road(3, _straight_line(51.735, 0.6604, 51.730, 0.6604), oneway="yes")
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0), oneway="yes")
+        b = _road(2, _line(0.0025, _GAP, -0.0025, _GAP), oneway="yes")
+        c = _road(3, _line(0.0025, 2 * _GAP, -0.0025, 2 * _GAP), oneway="yes")
         pairs = pair_carriageways([a, b, c])
         used = [r.osm_id for p in pairs for r in p]
         assert len(used) == len(set(used))
@@ -153,8 +165,7 @@ class TestPairCarriageways:
 
 class TestBuildGameElements:
     def test_dual_carriageway_tag_makes_median(self):
-        r = _road(7, _straight_line(51.730, 0.660, 51.735, 0.660),
-                  hw="trunk", dual_carriageway="yes")
+        r = _road(7, _NORTH_SOUTH, hw="trunk", dual_carriageway="yes")
         els = build_game_elements([r], flat_elev, world_half=5000)
         medians = [e for e in els["linear"]
                    if e.get("gameElement") == "central_reserve"]
@@ -163,23 +174,22 @@ class TestBuildGameElements:
         assert medians[0]["material"] == "median_concrete"
 
     def test_paired_oneways_make_median(self):
-        a = _road(1, _straight_line(51.730, 0.660, 51.735, 0.660),
+        a = _road(1, _line(-0.0025, 0.0, 0.0025, 0.0),
                   hw="secondary", oneway="yes")
-        b = _road(2, _straight_line(51.735, 0.6602, 51.730, 0.6602),
+        b = _road(2, _line(0.0025, _GAP, -0.0025, _GAP),
                   hw="secondary", oneway="yes")
         els = build_game_elements([a, b], flat_elev, world_half=5000)
         medians = [e for e in els["linear"]
                    if e.get("gameElement") == "central_reserve"]
         assert len(medians) == 1
         # median should sit between the two carriageways (world coords)
-        from tools.constants import gps_to_world
-        xa = gps_to_world(51.7325, 0.660)[0]
-        xb = gps_to_world(51.7325, 0.6602)[0]
+        xa = gps_to_world(*_pt(0.0, 0.0))[0]
+        xb = gps_to_world(*_pt(0.0, _GAP))[0]
         mx = sum(n[0] for n in medians[0]["nodes"]) / len(medians[0]["nodes"])
         assert min(xa, xb) < mx < max(xa, xb)
 
     def test_guard_rail_from_barrier_tag(self):
-        r = _road(3, _straight_line(51.730, 0.660, 51.733, 0.660),
+        r = _road(3, _line(-0.0015, 0.0, 0.0015, 0.0),
                   hw="motorway", barrier="guard_rail")
         els = build_game_elements([r], flat_elev, world_half=5000)
         rails = [e for e in els["linear"] if e.get("gameElement") == "guard_rail"]
@@ -187,20 +197,20 @@ class TestBuildGameElements:
         assert all(e["material"] == "guard_rail" for e in rails)
 
     def test_sidewalk_both_sides(self):
-        r = _road(4, _straight_line(51.730, 0.660, 51.733, 0.660),
+        r = _road(4, _line(-0.0015, 0.0, 0.0015, 0.0),
                   hw="residential", sidewalk="both")
         els = build_game_elements([r], flat_elev, world_half=5000)
         sw = [e for e in els["linear"] if e.get("gameElement") == "sidewalk"]
         assert len(sw) == 2
 
     def test_cycleway_lane(self):
-        r = _road(5, _straight_line(51.730, 0.660, 51.733, 0.660),
+        r = _road(5, _line(-0.0015, 0.0, 0.0015, 0.0),
                   hw="residential", cycleway="lane")
         els = build_game_elements([r], flat_elev, world_half=5000)
         assert any(e.get("gameElement") == "cycleway" for e in els["linear"])
 
     def test_speed_signs_emitted(self):
-        r = _road(6, _straight_line(51.720, 0.650, 51.740, 0.650),
+        r = _road(6, _line(-0.005, 0.0, 0.005, 0.0),
                   hw="primary", maxspeed="40 mph")
         els = build_game_elements([r], flat_elev, world_half=5000)
         signs = [e for e in els["objects"] if e.get("gameElement") == "speed_limit"]
@@ -208,26 +218,22 @@ class TestBuildGameElements:
         assert all(s["limit_kmh"] == 64 for s in signs)
 
     def test_street_lamps_when_lit(self):
-        r = _road(8, _straight_line(51.730, 0.660, 51.736, 0.660),
+        r = _road(8, _line(-0.0025, 0.0, 0.0025, 0.0),
                   hw="primary", lit="yes")
         els = build_game_elements([r], flat_elev, world_half=5000)
         lamps = [e for e in els["objects"] if e.get("gameElement") == "street_lamp"]
         assert lamps
 
     def test_bridge_deck_is_level(self):
-        r = _road(9, _straight_line(51.730, 0.660, 51.736, 0.660),
+        r = _road(9, _line(-0.0025, 0.0, 0.0025, 0.0),
                   hw="primary", bridge="yes")
-
-        def sloped(x, y):        # noqa: ARG001
-            return x / 100.0
-
-        els = build_game_elements([r], sloped, world_half=5000)
+        els = build_game_elements([r], lambda x, y: x / 100.0, world_half=5000)
         bridges = [e for e in els["objects"] if e.get("gameElement") == "bridge"]
         assert len(bridges) == 1
 
     def test_elements_outside_world_dropped(self):
-        # Way ~5 km north of centre, world_half = 1000
-        r = _road(10, _straight_line(51.780, 0.660, 51.785, 0.660),
+        # Way ~5.5 km north of centre, world_half = 1000
+        r = _road(10, _line(0.05, 0.0, 0.055, 0.0),
                   hw="trunk", dual_carriageway="yes")
         els = build_game_elements([r], flat_elev, world_half=1000)
         assert els["linear"] == []

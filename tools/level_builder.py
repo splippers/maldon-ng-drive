@@ -32,7 +32,7 @@ _NS = uuid.UUID("6ba7b810-9dad-11d1-80b4-00c04fd430c8")
 
 
 def _uid(name: str) -> str:
-    return str(uuid.uuid5(_NS, f"felsted.{name}"))
+    return str(uuid.uuid5(_NS, f"{MAP_NAME}.{name}"))
 
 
 def _obj(cls: str, name: str, **props) -> dict[str, Any]:
@@ -164,6 +164,72 @@ def _load_spawn_points() -> list[tuple]:
 _SPAWN_POINTS = _load_spawn_points()
 
 
+# ── Level metadata (info.json) — driven by map_config.py ──────────────────────
+def _load_map_meta() -> dict:
+    """Title/description/author/version + spawn labels from map_config.py."""
+    meta = {
+        "title":       MAP_NAME.replace("_", " ").title(),
+        "description": "",
+        "author":      "ng-drive-network",
+        "version":     "0.1.0",
+        "labels":      {},
+    }
+    try:
+        import map_config
+    except ModuleNotFoundError:
+        return meta
+    meta["title"]       = getattr(map_config, "MAP_TITLE",    meta["title"])
+    meta["description"] = getattr(map_config, "MAP_DESC",     meta["description"])
+    meta["author"]      = getattr(map_config, "MAP_AUTHOR",   meta["author"])
+    meta["version"]     = getattr(map_config, "MAP_VERSION",  meta["version"])
+    meta["labels"]      = getattr(map_config, "SPAWN_LABELS", {})
+    return meta
+
+
+def _spawn_label(objname: str, labels: dict) -> str:
+    if objname in labels:
+        return labels[objname]
+    return objname.removeprefix("spawn_").replace("_", " ").title()
+
+
+def write_info_json(out_path: Path | str) -> Path:
+    """
+    Write levels/<map>/info.json — the level-selector metadata BeamNG reads
+    to list the map (name, description, spawn points, preview thumbnail).
+
+    Fully derived from map_config.py, so every map in the ng-drive network
+    gets a valid, consistent file and it can never be forgotten.
+    """
+    out_path  = Path(out_path)
+    level_dir = out_path.parent
+    meta      = _load_map_meta()
+
+    spawn_points = [
+        {"name": _spawn_label(sp[0], meta["labels"]), "objectname": sp[0]}
+        for sp in _SPAWN_POINTS
+    ]
+
+    info = {
+        "name":        meta["title"],
+        "description": meta["description"],
+        "type":        "map",
+        "author":      meta["author"],
+        "version":     meta["version"],
+        "spawnPoints": spawn_points,
+        "previews": [
+            {"title": meta["title"],
+             "image": f"levels/{MAP_NAME}/preview.png"},
+        ],
+    }
+
+    info_path = level_dir / "info.json"
+    with info_path.open("w", encoding="utf-8") as f:
+        json.dump(info, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    log.info("Level info written: %s (%d spawns)", info_path, len(spawn_points))
+    return info_path
+
+
 # ── Public API ─────────────────────────────────────────────────────────────────
 
 def build_level(roads:            list[dict],
@@ -252,6 +318,9 @@ def build_level(roads:            list[dict],
 
     with out_path.open("w", encoding="utf-8") as f:
         json.dump(mission_group, f, indent=2)
+
+    # Level-selector metadata (info.json) — always emitted alongside the level
+    write_info_json(out_path)
 
     road_count  = len(roads) + len(elem_linear)
     bld_count   = len(bld_markers) + len(bld_3d)
