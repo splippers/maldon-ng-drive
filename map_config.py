@@ -21,7 +21,7 @@ MAP_AUTHOR = "ng-drive-network"
 
 # ── GPS anchor ────────────────────────────────────────────────────────────────
 # Centre on Maldon East station site (demolished; approx. location).
-# GPS ref: 51.7314°N, 0.6633°E  (TL 856 072)
+# GPS ref: 51.7314°N, 0.6633°E  (BNG TL 840 069)
 CENTER_LAT = 51.7314
 CENTER_LON =  0.6633
 

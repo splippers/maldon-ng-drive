@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Guernsey Court" name="Guernsey Court">
+      <mesh>
+        <source id="geo_Guernsey Court_pos">
+          <float_array id="geo_Guernsey Court_pos_arr" count="126">646.997 -275.658 28.645 640.994 -260.699 28.645 644.264 -259.387 28.645 641.600 -252.741 28.645 652.909 -248.207 28.645 653.467 -249.596 28.645 654.754 -249.074 28.645 654.314 -247.984 28.645 659.924 -245.728 28.645 660.688 -247.629 28.645 663.544 -246.484 28.645 665.327 -250.930 28.645 663.806 -251.541 28.645 665.003 -254.531 28.645 650.844 -260.210 28.645 650.018 -260.543 28.645 651.216 -263.533 28.645 652.021 -263.210 28.645 653.267 -266.311 28.645 652.076 -266.789 28.645 654.437 -272.680 28.645 646.997 -275.658 36.645 640.994 -260.699 36.645 644.264 -259.387 36.645 641.600 -252.741 36.645 652.909 -248.207 36.645 653.467 -249.596 36.645 654.754 -249.074 36.645 654.314 -247.984 36.645 659.924 -245.728 36.645 660.688 -247.629 36.645 663.544 -246.484 36.645 665.327 -250.930 36.645 663.806 -251.541 36.645 665.003 -254.531 36.645 650.844 -260.210 36.645 650.018 -260.543 36.645 651.216 -263.533 36.645 652.021 -263.210 36.645 653.267 -266.311 36.645 652.076 -266.789 36.645 654.437 -272.680 36.645</float_array>
+          <technique_common>
+            <accessor source="#geo_Guernsey Court_pos_arr" count="42" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Guernsey Court_verts">
+          <input semantic="POSITION" source="#geo_Guernsey Court_pos"/>
+        </vertices>
+        <triangles count="61" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Guernsey Court_verts" offset="0"/>
+          <p>0 1 22 0 22 21 1 2 23 1 23 22 2 3 24 2 24 23 3 4 25 3 25 24 4 5 26 4 26 25 5 6 27 5 27 26 6 7 28 6 28 27 7 8 29 7 29 28 8 9 30 8 30 29 9 10 31 9 31 30 10 11 32 10 32 31 11 12 33 11 33 32 12 13 34 12 34 33 13 14 35 13 35 34 14 15 36 14 36 35 15 16 37 15 37 36 16 17 38 16 38 37 17 18 39 17 39 38 18 19 40 18 40 39 19 20 41 19 41 40 20 0 21 20 21 41 41 22 21 41 23 22 41 24 23 24 26 25 27 29 28 27 30 29 26 30 27 30 32 31 26 32 30 24 32 26 24 33 32 24 34 33 24 35 34 24 36 35 24 37 36 37 39 38 24 39 37 24 40 39 24 41 40</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Guernsey Court" type="NODE">
+        <instance_geometry url="#geo_Guernsey Court">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

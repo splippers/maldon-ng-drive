@@ -51,6 +51,11 @@ TERRAIN_DIR = LEVELS_DIR / "terrainGrid"
 OSM_CACHE  = DATA_DIR / f"{MAP_NAME}_osm.json"
 SRTM_CACHE = DATA_DIR / f"{MAP_NAME}_srtm_32x32.json"
 
+# Environment Agency LiDAR DTM (see tools/lidar.py) — England only.
+LIDAR_DIR        = DATA_DIR / "lidar"
+LIDAR_TIF_CACHE  = LIDAR_DIR / f"{MAP_NAME}_dtm_2m.tif"
+LIDAR_GRID_CACHE = DATA_DIR / f"{MAP_NAME}_lidar_1025.npy"
+
 # ── GPS anchor ────────────────────────────────────────────────────────────────
 CENTER_LAT = _cfg.CENTER_LAT
 CENTER_LON = _cfg.CENTER_LON
@@ -59,6 +64,10 @@ BBOX       = _cfg.BBOX   # (S, W, N, E)
 # ── Projection ────────────────────────────────────────────────────────────────
 _LAT_SCALE = 111_139.0
 _LON_SCALE = 111_139.0 * math.cos(math.radians(CENTER_LAT))
+
+# Public aliases (used by heightmap/lidar resampling)
+LAT_SCALE = _LAT_SCALE
+LON_SCALE = _LON_SCALE
 
 
 def gps_to_world(lat: float, lon: float) -> tuple[float, float]:

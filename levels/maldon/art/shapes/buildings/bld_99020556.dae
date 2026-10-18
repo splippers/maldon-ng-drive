@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Maldon Telephone Exchange" name="Maldon Telephone Exchange">
+      <mesh>
+        <source id="geo_Maldon Telephone Exchange_pos">
+          <float_array id="geo_Maldon Telephone Exchange_pos_arr" count="108">743.412 78.975 34.889 750.027 92.745 34.889 779.157 78.753 34.889 778.621 77.642 34.889 781.188 76.408 34.889 780.754 75.508 34.889 782.289 74.763 34.889 778.985 67.884 34.889 780.582 67.117 34.889 784.747 75.786 34.889 790.315 73.107 34.889 786.213 64.572 34.889 789.737 62.871 34.889 784.196 51.346 34.889 752.863 66.394 34.889 753.531 67.784 34.889 744.493 72.118 34.889 746.964 77.264 34.889 743.412 78.975 42.889 750.027 92.745 42.889 779.157 78.753 42.889 778.621 77.642 42.889 781.188 76.408 42.889 780.754 75.508 42.889 782.289 74.763 42.889 778.985 67.884 42.889 780.582 67.117 42.889 784.747 75.786 42.889 790.315 73.107 42.889 786.213 64.572 42.889 789.737 62.871 42.889 784.196 51.346 42.889 752.863 66.394 42.889 753.531 67.784 42.889 744.493 72.118 42.889 746.964 77.264 42.889</float_array>
+          <technique_common>
+            <accessor source="#geo_Maldon Telephone Exchange_pos_arr" count="36" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Maldon Telephone Exchange_verts">
+          <input semantic="POSITION" source="#geo_Maldon Telephone Exchange_pos"/>
+        </vertices>
+        <triangles count="52" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Maldon Telephone Exchange_verts" offset="0"/>
+          <p>0 1 19 0 19 18 1 2 20 1 20 19 2 3 21 2 21 20 3 4 22 3 22 21 4 5 23 4 23 22 5 6 24 5 24 23 6 7 25 6 25 24 7 8 26 7 26 25 8 9 27 8 27 26 9 10 28 9 28 27 10 11 29 10 29 28 11 12 30 11 30 29 12 13 31 12 31 30 13 14 32 13 32 31 14 15 33 14 33 32 15 16 34 15 34 33 16 17 35 16 35 34 17 0 18 17 18 35 35 19 18 35 20 19 35 21 20 35 22 21 35 23 22 35 24 23 35 25 24 35 26 25 26 28 27 26 29 28 35 29 26 35 30 29 35 31 30 31 33 32 35 33 31 33 35 34</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Maldon Telephone Exchange" type="NODE">
+        <instance_geometry url="#geo_Maldon Telephone Exchange">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

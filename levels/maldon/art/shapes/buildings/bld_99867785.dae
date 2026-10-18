@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Fairfield House" name="Fairfield House">
+      <mesh>
+        <source id="geo_Fairfield House_pos">
+          <float_array id="geo_Fairfield House_pos_arr" count="156">926.751 -437.754 18.467 920.480 -439.010 18.467 921.065 -441.911 18.467 918.167 -442.489 18.467 918.629 -444.812 18.467 908.751 -446.779 18.467 907.450 -440.288 18.467 901.076 -441.566 18.467 901.654 -444.456 18.467 898.873 -445.012 18.467 896.808 -434.665 18.467 898.825 -434.265 18.467 897.648 -428.385 18.467 888.004 -430.319 18.467 889.243 -436.510 18.467 889.808 -436.398 18.467 891.825 -446.490 18.467 888.748 -447.101 18.467 890.937 -458.071 18.467 903.692 -455.514 18.467 903.994 -457.004 18.467 921.265 -453.558 18.467 920.811 -451.280 18.467 922.497 -450.935 18.467 922.896 -452.947 18.467 929.525 -451.624 18.467 926.751 -437.754 26.467 920.480 -439.010 26.467 921.065 -441.911 26.467 918.167 -442.489 26.467 918.629 -444.812 26.467 908.751 -446.779 26.467 907.450 -440.288 26.467 901.076 -441.566 26.467 901.654 -444.456 26.467 898.873 -445.012 26.467 896.808 -434.665 26.467 898.825 -434.265 26.467 897.648 -428.385 26.467 888.004 -430.319 26.467 889.243 -436.510 26.467 889.808 -436.398 26.467 891.825 -446.490 26.467 888.748 -447.101 26.467 890.937 -458.071 26.467 903.692 -455.514 26.467 903.994 -457.004 26.467 921.265 -453.558 26.467 920.811 -451.280 26.467 922.497 -450.935 26.467 922.896 -452.947 26.467 929.525 -451.624 26.467</float_array>
+          <technique_common>
+            <accessor source="#geo_Fairfield House_pos_arr" count="52" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Fairfield House_verts">
+          <input semantic="POSITION" source="#geo_Fairfield House_pos"/>
+        </vertices>
+        <triangles count="76" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Fairfield House_verts" offset="0"/>
+          <p>0 1 27 0 27 26 1 2 28 1 28 27 2 3 29 2 29 28 3 4 30 3 30 29 4 5 31 4 31 30 5 6 32 5 32 31 6 7 33 6 33 32 7 8 34 7 34 33 8 9 35 8 35 34 9 10 36 9 36 35 10 11 37 10 37 36 11 12 38 11 38 37 12 13 39 12 39 38 13 14 40 13 40 39 14 15 41 14 41 40 15 16 42 15 42 41 16 17 43 16 43 42 17 18 44 17 44 43 18 19 45 18 45 44 19 20 46 19 46 45 20 21 47 20 47 46 21 22 48 21 48 47 22 23 49 22 49 48 23 24 50 23 50 49 24 25 51 24 51 50 25 0 26 25 26 51 51 26 27 51 27 28 51 28 29 51 29 30 51 30 31 31 32 33 31 33 34 31 34 35 51 31 35 36 37 38 36 38 39 35 36 39 39 40 41 35 39 41 35 41 42 51 35 42 51 42 43 43 44 45 45 46 47 43 45 47 43 47 48 43 48 49 51 43 49 49 50 51</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Fairfield House" type="NODE">
+        <instance_geometry url="#geo_Fairfield House">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

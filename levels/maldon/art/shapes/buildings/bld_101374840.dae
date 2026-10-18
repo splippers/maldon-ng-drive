@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Hailey House" name="Hailey House">
+      <mesh>
+        <source id="geo_Hailey House_pos">
+          <float_array id="geo_Hailey House_pos_arr" count="84">465.248 63.294 38.632 477.404 65.194 38.632 478.016 60.960 38.632 484.150 61.882 38.632 484.521 60.715 38.632 489.243 60.837 38.632 487.653 46.601 38.632 483.785 46.912 38.632 483.847 44.511 38.632 478.078 43.711 38.632 477.583 46.167 38.632 470.954 45.067 38.632 469.178 53.413 38.632 467.031 53.047 38.632 465.248 63.294 46.632 477.404 65.194 46.632 478.016 60.960 46.632 484.150 61.882 46.632 484.521 60.715 46.632 489.243 60.837 46.632 487.653 46.601 46.632 483.785 46.912 46.632 483.847 44.511 46.632 478.078 43.711 46.632 477.583 46.167 46.632 470.954 45.067 46.632 469.178 53.413 46.632 467.031 53.047 46.632</float_array>
+          <technique_common>
+            <accessor source="#geo_Hailey House_pos_arr" count="28" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Hailey House_verts">
+          <input semantic="POSITION" source="#geo_Hailey House_pos"/>
+        </vertices>
+        <triangles count="40" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Hailey House_verts" offset="0"/>
+          <p>0 1 15 0 15 14 1 2 16 1 16 15 2 3 17 2 17 16 3 4 18 3 18 17 4 5 19 4 19 18 5 6 20 5 20 19 6 7 21 6 21 20 7 8 22 7 22 21 8 9 23 8 23 22 9 10 24 9 24 23 10 11 25 10 25 24 11 12 26 11 26 25 12 13 27 12 27 26 13 0 14 13 14 27 27 15 14 27 16 15 27 17 16 27 18 17 27 19 18 19 21 20 21 23 22 19 23 21 19 24 23 19 25 24 19 26 25 19 27 26</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Hailey House" type="NODE">
+        <instance_geometry url="#geo_Hailey House">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

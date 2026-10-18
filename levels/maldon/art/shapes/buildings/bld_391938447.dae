@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Maldon Salt" name="Maldon Salt">
+      <mesh>
+        <source id="geo_Maldon Salt_pos">
+          <float_array id="geo_Maldon Salt_pos_arr" count="78">23.782 -1031.048 19.488 53.601 -1033.526 19.488 55.631 -1033.971 19.488 57.841 -1034.771 19.488 59.438 -1035.560 19.488 60.939 -1036.716 19.488 62.088 -1038.483 19.488 63.506 -1040.428 19.488 64.126 -1043.262 19.488 63.417 -1053.086 19.488 52.004 -1052.197 19.488 52.272 -1048.219 19.488 22.557 -1045.996 19.488 23.782 -1031.048 27.488 53.601 -1033.526 27.488 55.631 -1033.971 27.488 57.841 -1034.771 27.488 59.438 -1035.560 27.488 60.939 -1036.716 27.488 62.088 -1038.483 27.488 63.506 -1040.428 27.488 64.126 -1043.262 27.488 63.417 -1053.086 27.488 52.004 -1052.197 27.488 52.272 -1048.219 27.488 22.557 -1045.996 27.488</float_array>
+          <technique_common>
+            <accessor source="#geo_Maldon Salt_pos_arr" count="26" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Maldon Salt_verts">
+          <input semantic="POSITION" source="#geo_Maldon Salt_pos"/>
+        </vertices>
+        <triangles count="37" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Maldon Salt_verts" offset="0"/>
+          <p>0 1 14 0 14 13 1 2 15 1 15 14 2 3 16 2 16 15 3 4 17 3 17 16 4 5 18 4 18 17 5 6 19 5 19 18 6 7 20 6 20 19 7 8 21 7 21 20 8 9 22 8 22 21 9 10 23 9 23 22 10 11 24 10 24 23 11 12 25 11 25 24 12 0 13 12 13 25 25 14 13 25 15 14 25 16 15 25 17 16 25 18 17 25 19 18 25 20 19 25 21 20 21 23 22 21 24 23 21 25 24</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Maldon Salt" type="NODE">
+        <instance_geometry url="#geo_Maldon Salt">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

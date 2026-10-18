@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Mind" name="Mind">
+      <mesh>
+        <source id="geo_Mind_pos">
+          <float_array id="geo_Mind_pos_arr" count="48">1068.308 -18.138 29.166 1067.502 -21.694 29.166 1068.411 -22.150 29.166 1072.582 -23.184 29.166 1073.030 -6.746 29.166 1068.893 -5.479 29.166 1067.757 -12.570 29.166 1069.326 -12.959 29.166 1068.308 -18.138 37.166 1067.502 -21.694 37.166 1068.411 -22.150 37.166 1072.582 -23.184 37.166 1073.030 -6.746 37.166 1068.893 -5.479 37.166 1067.757 -12.570 37.166 1069.326 -12.959 37.166</float_array>
+          <technique_common>
+            <accessor source="#geo_Mind_pos_arr" count="16" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Mind_verts">
+          <input semantic="POSITION" source="#geo_Mind_pos"/>
+        </vertices>
+        <triangles count="22" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Mind_verts" offset="0"/>
+          <p>0 1 9 0 9 8 1 2 10 1 10 9 2 3 11 2 11 10 3 4 12 3 12 11 4 5 13 4 13 12 5 6 14 5 14 13 6 7 15 6 15 14 7 0 8 7 8 15 8 9 10 15 8 10 15 10 11 15 11 12 15 12 13 13 14 15</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Mind" type="NODE">
+        <instance_geometry url="#geo_Mind">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

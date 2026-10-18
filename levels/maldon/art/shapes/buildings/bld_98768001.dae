@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Edwards Walk Arcade" name="Edwards Walk Arcade">
+      <mesh>
+        <source id="geo_Edwards Walk Arcade_pos">
+          <float_array id="geo_Edwards Walk Arcade_pos_arr" count="168">894.784 -6.502 32.029 894.027 -17.460 32.029 887.371 -17.282 32.029 887.488 -38.576 32.029 888.762 -49.046 32.029 902.645 -48.935 32.029 902.921 -38.576 32.029 903.994 -38.521 32.029 905.185 -38.465 32.029 905.158 -48.868 32.029 911.993 -48.868 32.029 912.055 -46.567 32.029 914.141 -46.445 32.029 914.733 -22.717 32.029 905.337 -22.728 32.029 905.240 -19.961 32.029 898.942 -19.938 32.029 898.942 -14.870 32.029 905.330 -14.970 32.029 905.330 -6.746 32.029 904.463 -6.646 32.029 904.366 -2.578 32.029 904.476 7.035 32.029 897.187 7.380 32.029 893.236 7.491 32.029 893.215 7.180 32.029 893.201 -0.667 32.029 895.287 -0.789 32.029 894.784 -6.502 40.029 894.027 -17.460 40.029 887.371 -17.282 40.029 887.488 -38.576 40.029 888.762 -49.046 40.029 902.645 -48.935 40.029 902.921 -38.576 40.029 903.994 -38.521 40.029 905.185 -38.465 40.029 905.158 -48.868 40.029 911.993 -48.868 40.029 912.055 -46.567 40.029 914.141 -46.445 40.029 914.733 -22.717 40.029 905.337 -22.728 40.029 905.240 -19.961 40.029 898.942 -19.938 40.029 898.942 -14.870 40.029 905.330 -14.970 40.029 905.330 -6.746 40.029 904.463 -6.646 40.029 904.366 -2.578 40.029 904.476 7.035 40.029 897.187 7.380 40.029 893.236 7.491 40.029 893.215 7.180 40.029 893.201 -0.667 40.029 895.287 -0.789 40.029</float_array>
+          <technique_common>
+            <accessor source="#geo_Edwards Walk Arcade_pos_arr" count="56" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Edwards Walk Arcade_verts">
+          <input semantic="POSITION" source="#geo_Edwards Walk Arcade_pos"/>
+        </vertices>
+        <triangles count="82" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Edwards Walk Arcade_verts" offset="0"/>
+          <p>0 1 29 0 29 28 1 2 30 1 30 29 2 3 31 2 31 30 3 4 32 3 32 31 4 5 33 4 33 32 5 6 34 5 34 33 6 7 35 6 35 34 7 8 36 7 36 35 8 9 37 8 37 36 9 10 38 9 38 37 10 11 39 10 39 38 11 12 40 11 40 39 12 13 41 12 41 40 13 14 42 13 42 41 14 15 43 14 43 42 15 16 44 15 44 43 16 17 45 16 45 44 17 18 46 17 46 45 18 19 47 18 47 46 19 20 48 19 48 47 20 21 49 20 49 48 21 22 50 21 50 49 22 23 51 22 51 50 23 24 52 23 52 51 24 25 53 24 53 52 25 26 54 25 54 53 26 27 55 26 55 54 27 0 28 27 28 55 55 28 29 29 30 31 29 31 32 29 32 33 55 29 33 36 37 38 36 38 39 36 39 40 36 40 41 35 36 41 34 35 41 34 41 42 34 42 43 34 43 44 33 34 44 55 33 44 55 44 45 55 45 46 46 47 48 55 46 48 55 48 49 55 49 50 55 50 51 55 51 52 55 52 53 53 54 55</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Edwards Walk Arcade" type="NODE">
+        <instance_geometry url="#geo_Edwards Walk Arcade">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

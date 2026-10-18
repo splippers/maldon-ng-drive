@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Phonebox" name="Phonebox">
+      <mesh>
+        <source id="geo_Phonebox_pos">
+          <float_array id="geo_Phonebox_pos_arr" count="48">992.205 -5.401 30.378 992.005 -13.392 30.378 991.234 -13.348 30.378 991.138 -19.249 30.378 985.569 -19.205 30.378 986.003 5.524 30.378 991.386 5.624 30.378 991.441 -5.446 30.378 992.205 -5.401 38.378 992.005 -13.392 38.378 991.234 -13.348 38.378 991.138 -19.249 38.378 985.569 -19.205 38.378 986.003 5.524 38.378 991.386 5.624 38.378 991.441 -5.446 38.378</float_array>
+          <technique_common>
+            <accessor source="#geo_Phonebox_pos_arr" count="16" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Phonebox_verts">
+          <input semantic="POSITION" source="#geo_Phonebox_pos"/>
+        </vertices>
+        <triangles count="22" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Phonebox_verts" offset="0"/>
+          <p>0 1 9 0 9 8 1 2 10 1 10 9 2 3 11 2 11 10 3 4 12 3 12 11 4 5 13 4 13 12 5 6 14 5 14 13 6 7 15 6 15 14 7 0 8 7 8 15 15 9 8 15 10 9 10 12 11 15 12 10 15 13 12 13 15 14</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Phonebox" type="NODE">
+        <instance_geometry url="#geo_Phonebox">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

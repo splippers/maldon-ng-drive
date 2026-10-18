@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_bld_158045229" name="bld_158045229">
+      <mesh>
+        <source id="geo_bld_158045229_pos">
+          <float_array id="geo_bld_158045229_pos_arr" count="60">1012.415 -1020.701 8.846 1022.354 -1019.978 8.846 1022.574 -1023.090 8.846 1026.457 -1022.812 8.846 1026.787 -1027.380 8.846 1023.125 -1027.647 8.846 1023.394 -1031.381 8.846 1014.328 -1032.037 8.846 1014.060 -1028.280 8.846 1012.972 -1028.358 8.846 1012.415 -1020.701 16.846 1022.354 -1019.978 16.846 1022.574 -1023.090 16.846 1026.457 -1022.812 16.846 1026.787 -1027.380 16.846 1023.125 -1027.647 16.846 1023.394 -1031.381 16.846 1014.328 -1032.037 16.846 1014.060 -1028.280 16.846 1012.972 -1028.358 16.846</float_array>
+          <technique_common>
+            <accessor source="#geo_bld_158045229_pos_arr" count="20" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_bld_158045229_verts">
+          <input semantic="POSITION" source="#geo_bld_158045229_pos"/>
+        </vertices>
+        <triangles count="28" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_bld_158045229_verts" offset="0"/>
+          <p>0 1 11 0 11 10 1 2 12 1 12 11 2 3 13 2 13 12 3 4 14 3 14 13 4 5 15 4 15 14 5 6 16 5 16 15 6 7 17 6 17 16 7 8 18 7 18 17 8 9 19 8 19 18 9 0 10 9 10 19 19 11 10 19 12 11 19 13 12 13 15 14 15 17 16 13 17 15 13 18 17 13 19 18</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="bld_158045229" type="NODE">
+        <instance_geometry url="#geo_bld_158045229">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

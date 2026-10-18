@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Tesco Extra" name="Tesco Extra">
+      <mesh>
+        <source id="geo_Tesco Extra_pos">
+          <float_array id="geo_Tesco Extra_pos_arr" count="192">1046.226 494.235 4.021 1071.983 502.848 4.021 1065.231 523.020 4.021 1063.324 522.387 4.021 1059.662 533.312 4.021 1058.402 532.889 4.021 1049.475 559.574 4.021 1051.595 560.285 4.021 1045.978 578.245 4.021 1039.391 596.761 4.021 964.981 571.855 4.021 957.816 569.310 4.021 946.726 565.753 4.021 928.300 559.585 4.021 933.531 544.926 4.021 950.347 493.713 4.021 951.696 489.690 4.021 965.793 494.402 4.021 970.956 478.976 4.021 983.821 483.277 4.021 985.673 477.753 4.021 1005.545 484.399 4.021 1000.438 499.659 4.021 999.433 502.659 4.021 1002.324 503.626 4.021 1020.757 509.795 4.021 1021.893 506.405 4.021 1030.256 509.206 4.021 1028.687 513.907 4.021 1031.895 514.985 4.021 1033.553 510.028 4.021 1040.196 512.251 4.021 1046.226 494.235 14.021 1071.983 502.848 14.021 1065.231 523.020 14.021 1063.324 522.387 14.021 1059.662 533.312 14.021 1058.402 532.889 14.021 1049.475 559.574 14.021 1051.595 560.285 14.021 1045.978 578.245 14.021 1039.391 596.761 14.021 964.981 571.855 14.021 957.816 569.310 14.021 946.726 565.753 14.021 928.300 559.585 14.021 933.531 544.926 14.021 950.347 493.713 14.021 951.696 489.690 14.021 965.793 494.402 14.021 970.956 478.976 14.021 983.821 483.277 14.021 985.673 477.753 14.021 1005.545 484.399 14.021 1000.438 499.659 14.021 999.433 502.659 14.021 1002.324 503.626 14.021 1020.757 509.795 14.021 1021.893 506.405 14.021 1030.256 509.206 14.021 1028.687 513.907 14.021 1031.895 514.985 14.021 1033.553 510.028 14.021 1040.196 512.251 14.021</float_array>
+          <technique_common>
+            <accessor source="#geo_Tesco Extra_pos_arr" count="64" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Tesco Extra_verts">
+          <input semantic="POSITION" source="#geo_Tesco Extra_pos"/>
+        </vertices>
+        <triangles count="94" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Tesco Extra_verts" offset="0"/>
+          <p>0 1 33 0 33 32 1 2 34 1 34 33 2 3 35 2 35 34 3 4 36 3 36 35 4 5 37 4 37 36 5 6 38 5 38 37 6 7 39 6 39 38 7 8 40 7 40 39 8 9 41 8 41 40 9 10 42 9 42 41 10 11 43 10 43 42 11 12 44 11 44 43 12 13 45 12 45 44 13 14 46 13 46 45 14 15 47 14 47 46 15 16 48 15 48 47 16 17 49 16 49 48 17 18 50 17 50 49 18 19 51 18 51 50 19 20 52 19 52 51 20 21 53 20 53 52 21 22 54 21 54 53 22 23 55 22 55 54 23 24 56 23 56 55 24 25 57 24 57 56 25 26 58 25 58 57 26 27 59 26 59 58 27 28 60 27 60 59 28 29 61 28 61 60 29 30 62 29 62 61 30 31 63 30 63 62 31 0 32 31 32 63 63 32 33 63 33 34 63 34 35 63 35 36 63 36 37 63 37 38 38 39 40 63 38 40 63 40 41 63 41 42 63 42 43 63 43 44 63 44 45 46 47 48 46 48 49 45 46 49 49 50 51 45 49 51 51 52 53 45 51 53 45 53 54 45 54 55 45 55 56 45 56 57 57 58 59 45 57 59 45 59 60 45 60 61 63 45 61 61 62 63</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Tesco Extra" type="NODE">
+        <instance_geometry url="#geo_Tesco Extra">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

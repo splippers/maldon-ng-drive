@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Taoist Tai Chi Society" name="Taoist Tai Chi Society">
+      <mesh>
+        <source id="geo_Taoist Tai Chi Society_pos">
+          <float_array id="geo_Taoist Tai Chi Society_pos_arr" count="42">677.098 0.800 37.025 685.736 21.872 37.025 686.968 21.494 37.025 689.536 26.996 37.025 699.785 23.206 37.025 694.568 1.945 37.025 691.050 -5.179 37.025 677.098 0.800 55.025 685.736 21.872 55.025 686.968 21.494 55.025 689.536 26.996 55.025 699.785 23.206 55.025 694.568 1.945 55.025 691.050 -5.179 55.025</float_array>
+          <technique_common>
+            <accessor source="#geo_Taoist Tai Chi Society_pos_arr" count="14" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Taoist Tai Chi Society_verts">
+          <input semantic="POSITION" source="#geo_Taoist Tai Chi Society_pos"/>
+        </vertices>
+        <triangles count="19" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Taoist Tai Chi Society_verts" offset="0"/>
+          <p>0 1 8 0 8 7 1 2 9 1 9 8 2 3 10 2 10 9 3 4 11 3 11 10 4 5 12 4 12 11 5 6 13 5 13 12 6 0 7 6 7 13 13 8 7 13 9 8 13 10 9 13 11 10 11 13 12</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Taoist Tai Chi Society" type="NODE">
+        <instance_geometry url="#geo_Taoist Tai Chi Society">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

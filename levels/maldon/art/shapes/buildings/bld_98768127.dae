@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_The Kings Head Centre" name="The Kings Head Centre">
+      <mesh>
+        <source id="geo_The Kings Head Centre_pos">
+          <float_array id="geo_The Kings Head Centre_pos_arr" count="90">932.829 -18.371 31.227 930.867 -33.508 31.227 930.034 -45.756 31.227 936.911 -46.278 31.227 936.911 -49.901 31.227 941.929 -50.213 31.227 943.629 -33.453 31.227 936.849 -32.541 31.227 939.451 -11.358 31.227 946.410 -11.725 31.227 948.771 -9.369 31.227 950.079 7.902 31.227 945.088 8.113 31.227 945.054 7.491 31.227 934.447 7.702 31.227 932.829 -18.371 39.227 930.867 -33.508 39.227 930.034 -45.756 39.227 936.911 -46.278 39.227 936.911 -49.901 39.227 941.929 -50.213 39.227 943.629 -33.453 39.227 936.849 -32.541 39.227 939.451 -11.358 39.227 946.410 -11.725 39.227 948.771 -9.369 39.227 950.079 7.902 39.227 945.088 8.113 39.227 945.054 7.491 39.227 934.447 7.702 39.227</float_array>
+          <technique_common>
+            <accessor source="#geo_The Kings Head Centre_pos_arr" count="30" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_The Kings Head Centre_verts">
+          <input semantic="POSITION" source="#geo_The Kings Head Centre_pos"/>
+        </vertices>
+        <triangles count="43" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_The Kings Head Centre_verts" offset="0"/>
+          <p>0 1 16 0 16 15 1 2 17 1 17 16 2 3 18 2 18 17 3 4 19 3 19 18 4 5 20 4 20 19 5 6 21 5 21 20 6 7 22 6 22 21 7 8 23 7 23 22 8 9 24 8 24 23 9 10 25 9 25 24 10 11 26 10 26 25 11 12 27 11 27 26 12 13 28 12 28 27 13 14 29 13 29 28 14 0 15 14 15 29 15 16 17 15 17 18 29 15 18 18 19 20 18 20 21 18 21 22 29 18 22 29 22 23 29 23 24 29 24 25 25 26 27 25 27 28 25 28 29</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="The Kings Head Centre" type="NODE">
+        <instance_geometry url="#geo_The Kings Head Centre">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

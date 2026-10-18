@@ -1,16 +1,20 @@
 """
-Terrain heightmap generator — v3.0.
+Terrain heightmap generator — v3.1.
 
 Priority order for elevation source:
-  1. Cached SRTM-30m grid  (data/felsted_srtm_32x32.json)
-  2. Live OpenTopoData fetch (--online)
-  3. Synthetic procedural model tuned to known spot heights
+  1. Environment Agency LiDAR DTM 2 m  (data/<map>_lidar_1025.npy)   ← best
+  2. Cached SRTM-30m grid  (data/<map>_srtm_32x32.json)
+  3. Live OpenTopoData fetch (--online)
+  4. Synthetic procedural model tuned to the map's spot heights
 
 In all cases the final grid is:
   • 1025 × 1025 float32 array (BLOCK_SIZE=1024, 2 m/cell → 2 048 m world)
   • Blended with fBm fine-detail noise
-  • Road grade cuts applied along Stebbing Road
-  • Campus plateau flattened to ~76 m ASL
+  • Road grade cuts + level-of-interest flattening (non-LiDAR sources only)
+
+When the LiDAR base is used the synthetic shaping is skipped entirely —
+the real survey already contains every road cut, kerb, camber, and the
+estuary — and only ±0.3 m of micro-detail noise is added.
 """
 
 from __future__ import annotations
@@ -18,7 +22,6 @@ from __future__ import annotations
 import json
 import logging
 import urllib.request
-from pathlib import Path
 
 import numpy as np
 from scipy.ndimage import gaussian_filter, zoom
@@ -28,6 +31,7 @@ from tools.constants import (
     CAMPUS_ELEV, VALLEY_ELEV, HILL_N_ELEV,
     CENTER_LAT, CENTER_LON, BBOX,
     SRTM_CACHE, world_to_hm,
+    LAT_SCALE, LON_SCALE,
 )
 
 log = logging.getLogger(__name__)
@@ -108,29 +112,72 @@ def _road_cut(grid: np.ndarray,
         )
 
 
+# ── Latitude/longitude grid sampling ──────────────────────────────────────────
+
+def world_latlon() -> tuple[np.ndarray, np.ndarray]:
+    """Latitude/longitude arrays for every world terrain vertex."""
+    idx = np.arange(GRID_SIZE, dtype=np.float64)
+    wx  = -WORLD_HALF + idx * SQUARE_SIZE
+    wy  =  WORLD_HALF - idx * SQUARE_SIZE
+    xx, yy = np.meshgrid(wx, wy)
+    return (CENTER_LAT + yy / LAT_SCALE, CENTER_LON + xx / LON_SCALE)
+
+
+def sample_latlon_grid(lats: np.ndarray, lons: np.ndarray,
+                       values: np.ndarray,
+                       lat: np.ndarray, lon: np.ndarray) -> np.ndarray:
+    """
+    Bilinearly sample a regular lat/lon grid onto arbitrary coordinates.
+
+    ``lats``/``lons`` must be ascending 1-D arrays; ``values`` has shape
+    (len(lats), len(lons)).  Coordinates outside the grid are clamped.
+    """
+    fi = np.interp(lat, lats, np.arange(len(lats), dtype=np.float64))
+    fj = np.interp(lon, lons, np.arange(len(lons), dtype=np.float64))
+    i0 = np.clip(fi.astype(np.int64), 0, len(lats) - 2)
+    j0 = np.clip(fj.astype(np.int64), 0, len(lons) - 2)
+    ti = (fi - i0).astype(np.float32)
+    tj = (fj - j0).astype(np.float32)
+
+    v = (values[i0,     j0    ] * (1 - ti) * (1 - tj)
+         + values[i0,     j0 + 1] * (1 - ti) * tj
+         + values[i0 + 1, j0    ] * ti * (1 - tj)
+         + values[i0 + 1, j0 + 1] * ti * tj)
+    return v.astype(np.float32)
+
+
 # ── SRTM / elevation sources ──────────────────────────────────────────────────
 
 def _load_srtm_cache() -> np.ndarray | None:
-    """Load cached 32×32 SRTM grid and zoom to GRID_SIZE. Returns None if missing."""
+    """
+    Load the cached 32×32 SRTM grid and resample it onto the world grid.
+
+    The cache spans BBOX (wider than the 2 km world), so it must be
+    *sampled* by lat/lon — never stretched/fitted — otherwise terrain
+    features land at the wrong scale relative to OSM geometry.
+    """
     if not SRTM_CACHE.exists():
         return None
     d    = json.loads(SRTM_CACHE.read_text())
-    grid = np.array(d["elevations"], dtype=np.float32)   # shape (32, 32) S→N
-    # Image convention: row 0 = north
-    grid = np.flipud(grid)
-    # Zoom to GRID_SIZE
-    factor = GRID_SIZE / grid.shape[0]
-    full   = zoom(grid, factor, order=3)[:GRID_SIZE, :GRID_SIZE]
-    full   = gaussian_filter(full, sigma=3.0)
+    if "lats" not in d or "lons" not in d:
+        log.warning("SRTM cache %s lacks lat/lon georeferencing — ignoring", SRTM_CACHE.name)
+        return None
+    lats = np.asarray(d["lats"], dtype=np.float64)
+    lons = np.asarray(d["lons"], dtype=np.float64)
+    raw  = np.asarray(d["elevations"], dtype=np.float32)   # (nlat, nlon), lats ascending
+
+    lat, lon = world_latlon()
+    full = sample_latlon_grid(lats, lons, raw, lat, lon)
+    full = gaussian_filter(full, sigma=1.0)
     log.info("SRTM cache loaded, range %.1f–%.1f m", full.min(), full.max())
     return full.astype(np.float32)
 
 
 def _fetch_srtm_live(coarse: int = 32) -> np.ndarray:
-    """Download SRTM grid, zoom to GRID_SIZE."""
+    """Download a coarse SRTM grid and resample it onto the world grid."""
     import time
     s, w, n, e = BBOX
-    lats = np.linspace(s, n, coarse).tolist()
+    lats = np.linspace(s, n, coarse)
     lons = np.linspace(w, e, coarse).tolist()
     flat_la = [la for la in lats for _ in lons]
     flat_lo = [lo for _ in lats for lo in lons]
@@ -153,10 +200,10 @@ def _fetch_srtm_live(coarse: int = 32) -> np.ndarray:
         else:
             elevs.extend([CAMPUS_ELEV] * min(_BATCH, len(flat_la) - i))
 
-    raw = np.array(elevs[:coarse*coarse], dtype=np.float32).reshape(coarse, coarse)
-    raw = np.flipud(raw)
-    full = zoom(raw, GRID_SIZE / coarse, order=3)[:GRID_SIZE, :GRID_SIZE]
-    return gaussian_filter(full, sigma=3.0).astype(np.float32)
+    raw  = np.array(elevs[:coarse*coarse], dtype=np.float32).reshape(coarse, coarse)
+    lat, lon = world_latlon()
+    full = sample_latlon_grid(lats, np.asarray(lons), raw, lat, lon)
+    return gaussian_filter(full, sigma=1.0).astype(np.float32)
 
 
 # ── Base terrain generation ───────────────────────────────────────────────────
@@ -211,46 +258,76 @@ def _apply_road_cuts(grid: np.ndarray) -> None:
     _road_cut(grid,  800,  -50,   -170, -188,  75.0, 73.5)
 
 
-def build_elevation(online: bool = False) -> np.ndarray:
+def build_elevation(online: bool = False, lidar: bool = False) -> np.ndarray:
     """
     Return float32 (GRID_SIZE, GRID_SIZE) elevation array in metres.
 
     Strategy:
-      1. Use cached SRTM grid if present.
-      2. Fetch live SRTM if --online requested.
-      3. Fall back to synthetic procedural model.
+      1. LiDAR DTM 2 m base (cached grid, cached GeoTIFF, or live WCS
+         download when ``online``/``lidar`` is set).
+      2. Cached SRTM grid if present.
+      3. Live SRTM if ``--online`` requested.
+      4. Synthetic procedural model.
+
+    LiDAR bases skip the synthetic road cuts and level flattening.
     """
     base: np.ndarray | None = None
+    source = "synthetic"
 
-    # Try cache first
-    base = _load_srtm_cache()
+    # 1. LiDAR (best available data)
+    try:
+        from tools.lidar import build_lidar_base
+        base = build_lidar_base(online=online or lidar)
+    except Exception as exc:                       # pragma: no cover - defensive
+        log.warning("LiDAR module unavailable: %s", exc)
+        base = None
 
+    if base is not None:
+        source = "lidar"
+
+    # 2. SRTM cache
+    if base is None:
+        base = _load_srtm_cache()
+        if base is not None:
+            source = "srtm-cache"
+
+    # 3. Live SRTM
     if base is None and online:
         log.info("Fetching SRTM elevation online …")
         try:
             base = _fetch_srtm_live()
+            source = "srtm-live"
             log.info("SRTM fetch OK, range %.1f–%.1f m", base.min(), base.max())
         except Exception as exc:
             log.warning("SRTM online fetch failed: %s", exc)
 
+    # 4. Synthetic fallback
     if base is None:
         log.info("Generating synthetic base terrain …")
         base = _make_synthetic_base()
+        source = "synthetic"
 
-    # Add fBm fine-detail noise (amplitude ±2 m, 9 octaves)
-    noise = _fbm(GRID_SIZE, seed=42, octaves=9, base_coarse=4) * 4.0 - 2.0
-    grid  = (base + noise.astype(np.float32)).astype(np.float32)
+    if source == "lidar":
+        # Real survey data: add only micro-detail, no synthetic shaping.
+        noise = _fbm(GRID_SIZE, seed=42, octaves=9, base_coarse=4) * 0.6 - 0.3
+        grid  = (base + noise.astype(np.float32)).astype(np.float32)
+        grid  = gaussian_filter(grid, sigma=0.5).astype(np.float32)
+    else:
+        # Coarse/interpolated sources need detail noise and synthetic shaping.
+        noise = _fbm(GRID_SIZE, seed=42, octaves=9, base_coarse=4) * 4.0 - 2.0
+        grid  = (base + noise.astype(np.float32)).astype(np.float32)
 
-    _apply_campus_blend(grid)
-    _apply_road_cuts(grid)
+        _apply_campus_blend(grid)
+        _apply_road_cuts(grid)
 
-    # Light smoothing to remove any seams
-    grid = gaussian_filter(grid, sigma=0.8).astype(np.float32)
+        # Light smoothing to remove any seams
+        grid = gaussian_filter(grid, sigma=0.8).astype(np.float32)
 
-    # Re-apply campus flatten after final smooth
-    _apply_campus_blend(grid)
+        # Re-apply level flatten after final smooth
+        _apply_campus_blend(grid)
 
-    log.info("Elevation ready: range %.1f–%.1f m", grid.min(), grid.max())
+    log.info("Elevation ready (%s): range %.1f–%.1f m",
+             source, grid.min(), grid.max())
     return grid
 
 

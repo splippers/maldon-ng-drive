@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Maldon Brewing Co" name="Maldon Brewing Co">
+      <mesh>
+        <source id="geo_Maldon Brewing Co_pos">
+          <float_array id="geo_Maldon Brewing Co_pos_arr" count="54">867.643 84.621 33.113 867.967 85.366 33.113 865.083 86.888 33.113 858.722 90.234 33.113 854.826 83.343 33.113 858.248 81.420 33.113 859.844 83.932 33.113 864.491 81.420 33.113 865.682 80.787 33.113 867.643 84.621 41.113 867.967 85.366 41.113 865.083 86.888 41.113 858.722 90.234 41.113 854.826 83.343 41.113 858.248 81.420 41.113 859.844 83.932 41.113 864.491 81.420 41.113 865.682 80.787 41.113</float_array>
+          <technique_common>
+            <accessor source="#geo_Maldon Brewing Co_pos_arr" count="18" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Maldon Brewing Co_verts">
+          <input semantic="POSITION" source="#geo_Maldon Brewing Co_pos"/>
+        </vertices>
+        <triangles count="25" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Maldon Brewing Co_verts" offset="0"/>
+          <p>0 1 10 0 10 9 1 2 11 1 11 10 2 3 12 2 12 11 3 4 13 3 13 12 4 5 14 4 14 13 5 6 15 5 15 14 6 7 16 6 16 15 7 8 17 7 17 16 8 0 9 8 9 17 17 9 10 17 10 11 17 11 12 12 13 14 12 14 15 17 12 15 15 16 17</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Maldon Brewing Co" type="NODE">
+        <instance_geometry url="#geo_Maldon Brewing Co">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>
