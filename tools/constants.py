@@ -42,6 +42,13 @@ MAP_VERSION = _cfg.MAP_VERSION
 MAP_DESC    = _cfg.MAP_DESC
 MAP_AUTHOR  = getattr(_cfg, "MAP_AUTHOR", "ng-drive-network")
 
+# Optional LevelInfo metadata (see level_builder.write_info_json)
+MAP_BIOME       = getattr(_cfg, "MAP_BIOME", "English Countryside")
+MAP_ROADS       = getattr(_cfg, "MAP_ROADS", "OSM road network")
+MAP_SUITABLEFOR = getattr(_cfg, "MAP_SUITABLEFOR", "Free Roam")
+MAP_FEATURES    = getattr(_cfg, "MAP_FEATURES", "OSM roads, LiDAR terrain")
+SPAWN_LABELS    = getattr(_cfg, "SPAWN_LABELS", {})
+
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT       = _ROOT
 DATA_DIR   = ROOT / "data"

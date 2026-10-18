@@ -19,6 +19,14 @@ MAP_DESC    = (
 )
 MAP_AUTHOR = "ng-drive-network"
 
+# Level-selector metadata (BeamNG LevelInfo schema)
+MAP_BIOME       = "English Estuary"
+MAP_ROADS       = "OSM: A414 primary, B1018, residential, service"
+MAP_SUITABLEFOR = "Free Roam, Point-to-Point"
+MAP_FEATURES    = ("Environment Agency LiDAR 2 m terrain, Blackwater estuary, "
+                   "OSM game elements (medians, barriers, sidewalks), "
+                   "historical railway trackbed")
+
 # ── GPS anchor ────────────────────────────────────────────────────────────────
 # Centre on Maldon East station site (demolished; approx. location).
 # GPS ref: 51.7314°N, 0.6633°E  (BNG TL 840 069)

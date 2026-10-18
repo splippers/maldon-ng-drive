@@ -164,62 +164,63 @@ def _load_spawn_points() -> list[tuple]:
 _SPAWN_POINTS = _load_spawn_points()
 
 
-# ── Level metadata (info.json) — driven by map_config.py ──────────────────────
-def _load_map_meta() -> dict:
-    """Title/description/author/version + spawn labels from map_config.py."""
-    meta = {
-        "title":       MAP_NAME.replace("_", " ").title(),
-        "description": "",
-        "author":      "ng-drive-network",
-        "version":     "0.1.0",
-        "labels":      {},
+# ── Level metadata (info.json) — BeamNG LevelInfo schema ──────────────────────
+def _info_meta() -> dict:
+    """Level-selector metadata from tools/constants.py (fed by map_config.py)."""
+    from tools import constants as C
+    return {
+        "title":       C.MAP_TITLE,
+        "desc":        C.MAP_DESC,
+        "author":      C.MAP_AUTHOR,
+        "version":     C.MAP_VERSION,
+        "biome":       getattr(C, "MAP_BIOME", "English Countryside"),
+        "roads":       getattr(C, "MAP_ROADS", "OSM road network"),
+        "suitablefor": getattr(C, "MAP_SUITABLEFOR", "Free Roam"),
+        "features":    getattr(C, "MAP_FEATURES", "OSM roads, LiDAR terrain"),
+        "labels":      getattr(C, "SPAWN_LABELS", {}),
     }
-    try:
-        import map_config
-    except ModuleNotFoundError:
-        return meta
-    meta["title"]       = getattr(map_config, "MAP_TITLE",    meta["title"])
-    meta["description"] = getattr(map_config, "MAP_DESC",     meta["description"])
-    meta["author"]      = getattr(map_config, "MAP_AUTHOR",   meta["author"])
-    meta["version"]     = getattr(map_config, "MAP_VERSION",  meta["version"])
-    meta["labels"]      = getattr(map_config, "SPAWN_LABELS", {})
-    return meta
 
 
-def _spawn_label(objname: str, labels: dict) -> str:
-    if objname in labels:
-        return labels[objname]
-    return objname.removeprefix("spawn_").replace("_", " ").title()
-
-
-def write_info_json(out_path: Path | str) -> Path:
+def write_info_json(out_path: Path | str,
+                    level_size: int | None = None) -> Path:
     """
-    Write levels/<map>/info.json — the level-selector metadata BeamNG reads
-    to list the map (name, description, spawn points, preview thumbnail).
+    Write levels/<map>/info.json in BeamNG's LevelInfo schema.
 
-    Fully derived from map_config.py, so every map in the ng-drive network
-    gets a valid, consistent file and it can never be forgotten.
+    BeamNG reads this to populate the level selector (title, size, biome,
+    spawn points, preview).  Everything comes from tools/constants.py, so
+    every map in the ng-drive network gets a valid, consistent file.
     """
     out_path  = Path(out_path)
     level_dir = out_path.parent
-    meta      = _load_map_meta()
+    meta      = _info_meta()
 
-    spawn_points = [
-        {"name": _spawn_label(sp[0], meta["labels"]), "objectname": sp[0]}
-        for sp in _SPAWN_POINTS
-    ]
+    if level_size is None:
+        from tools.constants import BLOCK_SIZE, SQUARE_SIZE
+        level_size = int(BLOCK_SIZE * SQUARE_SIZE)
+
+    spawn_points = []
+    for sp in _SPAWN_POINTS:
+        entry = {"objectname": sp[0]}
+        label = meta["labels"].get(sp[0])
+        if label:
+            entry["name"] = label
+        spawn_points.append(entry)
 
     info = {
-        "name":        meta["title"],
-        "description": meta["description"],
-        "type":        "map",
-        "author":      meta["author"],
+        "title":       meta["title"],
+        "description": meta["desc"],
+        "size":        [level_size, level_size],
+        "biome":       meta["biome"],
+        "roads":       meta["roads"],
+        "suitablefor": meta["suitablefor"],
+        "features":    meta["features"],
+        "authors":     meta["author"],
         "version":     meta["version"],
-        "spawnPoints": spawn_points,
-        "previews": [
-            {"title": meta["title"],
-             "image": f"levels/{MAP_NAME}/preview.png"},
-        ],
+        "defaultSpawnPointName": spawn_points[0]["objectname"] if spawn_points else "",
+        "spawnPoints":       spawn_points,
+        "supportsTraffic":   True,
+        "supportsTimeOfDay": True,
+        "previews":          ["preview.png"],
     }
 
     info_path = level_dir / "info.json"
