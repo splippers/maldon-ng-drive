@@ -86,26 +86,56 @@ def _write_attribution() -> None:
     )
 
 
-def query_mapillary(bbox, token, limit=2000):
-    """Return raw list of image dicts from the Mapillary graph API."""
+def _tile_bboxes(bbox, tile_deg=0.02):
+    """Split a (S,W,N,E) bbox into sub-bboxes no larger than tile_deg."""
     s, w, n, e = bbox
-    bbox_str = f"{w},{s},{e},{n}"  # lon_min,lat_min,lon_max,lat_max
+    tiles = []
+    lat = s
+    while lat < n:
+        lat2 = min(lat + tile_deg, n)
+        lon = w
+        while lon < e:
+            lon2 = min(lon + tile_deg, e)
+            tiles.append((lat, lon, lat2, lon2))
+            lon = lon2
+        lat = lat2
+    return tiles
+
+
+def query_mapillary(bbox, token, limit=2000):
+    """Return raw list of image dicts from the Mapillary graph API.
+
+    Tiles the bbox into small sub-queries to avoid Mapillary's
+    'reduce the amount of data' 500 errors on dense areas.
+    """
     headers = {"Authorization": f"OAuth {token}"}
-    params = {"bbox": bbox_str, "fields": MAPILLARY_FIELDS, "limit": min(limit, 2000)}
     out = []
-    url = MAPILLARY_API
-    while url and len(out) < limit:
-        r = requests.get(url, headers=headers, params=params, timeout=60)
-        r.raise_for_status()
-        j = r.json()
-        out.extend(j.get("data", []))
-        # pagination
-        paging = j.get("paging", {})
-        url = paging.get("next")
-        params = None  # next already includes params
-        if not url:
+    seen = set()
+    for tb in _tile_bboxes(bbox):
+        s, w, n, e = tb
+        bbox_str = f"{w},{s},{e},{n}"
+        params = {"bbox": bbox_str, "fields": MAPILLARY_FIELDS, "limit": 500}
+        url = MAPILLARY_API
+        while url and len(out) < limit:
+            try:
+                r = requests.get(url, headers=headers, params=params, timeout=60)
+                r.raise_for_status()
+            except requests.HTTPError:
+                # skip this tile on failure
+                break
+            j = r.json()
+            for d in j.get("data", []):
+                if d.get("id") not in seen:
+                    seen.add(d.get("id"))
+                    out.append(d)
+            paging = j.get("paging", {})
+            url = paging.get("next")
+            params = None
+            if not url:
+                break
+            time.sleep(0.2)
+        if len(out) >= limit:
             break
-        time.sleep(0.2)
     return out[:limit]
 
 
