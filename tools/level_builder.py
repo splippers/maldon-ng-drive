@@ -24,7 +24,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from tools.constants import MAP_NAME, SQUARE_SIZE
+from tools.constants import MAP_NAME, SQUARE_SIZE, WORLD_HALF
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +63,11 @@ def _level_info() -> dict:
 def _terrain_block() -> dict:
     return _obj(
         "TerrainBlock", "Terrain",
-        position            = [0, 0, 0],
+        # position is the south-west corner of the terrain grid in world
+        # space; content is centred on the origin, so the SW corner sits at
+        # (-WORLD_HALF, -WORLD_HALF). BeamNG maps row 0 of the .ter to the
+        # southern edge of this block.
+        position            = [-WORLD_HALF, -WORLD_HALF, 0],
         rotation            = [1, 0, 0, 0],
         scale               = [1, 1, 1],
         squareSize          = SQUARE_SIZE,

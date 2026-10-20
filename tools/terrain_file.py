@@ -1,23 +1,25 @@
 """
-Write Torque3D / BeamNG terrain binary files (.ter).
+Write BeamNG terrain binary files (.ter).
 
-Format: version 2 of the Torque3D TerrainFile format.
+Format: BeamNG TerrainFile v9 (the current on-disk format; see
+https://documentation.beamng.com/modding/levels/level_formats/terrain/).
 Byte layout (little-endian):
 
-  [0  –  3]  Magic        "TERR"
-  [4  –  7]  uint32       version = 2
-  [8  – 11]  uint32       blockSize   (cells per side; vertex grid = blockSize+1)
-  [12 – 15]  uint32       numLayers
-  [16 – …]   uint16×(blockSize+1)²  height values (0 = 0 m, 65535 = maxHeight m)
-  […  – …]   uint8 ×(blockSize+1)²  per-vertex flags (all 0)
-  For each layer:
-    NUL-terminated UTF-8  internalName
-    NUL-terminated UTF-8  texturePath
-    uint8×(blockSize+1)²  coverage weights (0–255)
+  [0]       uint8        version = 9
+  [1 – 4]   uint32       size (power-of-two samples per side; world width =
+                         size * squareSize, squareSize set on TerrainBlock)
+  [5 – …]   uint16×size²  heightmap (row 0 = south, col 0 = west)
+  […  – …]   uint8 ×size²  layermap (material index per sample; row 0 = south;
+                           255 = hole/empty terrain)
+  […  – …]   uint32        materialCount
+  for each material: uint8 length + UTF-8 internal name (length-prefixed)
 
-If the binary proves incompatible with the installed BeamNG version, fall back
-to the PNG import workflow: open World Editor → Terrain → Import Heightmap and
-point it at `terrainGrid/felsted_height.png`.
+The input elevation grid is (BLOCK_SIZE+1)² = GRID_SIZE² with row 0 = north
+(image convention). The v9 file stores BLOCK_SIZE² samples with row 0 = south,
+so the far-north row and far-east column of the input grid are dropped and the
+grid is flipped south-to-north. This matches the TerrainBlock placement at
+[-WORLD_HALF, -WORLD_HALF, 0]: sample (r, c) sits at world
+(-WORLD_HALF + c*squareSize, -WORLD_HALF + r*squareSize).
 """
 
 from __future__ import annotations
@@ -29,18 +31,15 @@ from pathlib import Path
 import numpy as np
 
 from tools.constants import (
-    BLOCK_SIZE, GRID_SIZE, MAX_TERRAIN_HEIGHT, SQUARE_SIZE,
+    BLOCK_SIZE, GRID_SIZE, MAX_TERRAIN_HEIGHT, SQUARE_SIZE, WORLD_HALF, MAP_NAME,
 )
 
 log = logging.getLogger(__name__)
 
-_MAGIC   = b"TERR"
-_VERSION = 2
-
-TERRAIN_LAYER_NAME     = "felsted_grass"
-TERRAIN_LAYER_TEX      = "levels/felsted/art/terrains/felsted_grass/diffuse.png"
-SATELLITE_LAYER_NAME   = "felsted_satellite"
-SATELLITE_LAYER_TEX    = "levels/felsted/art/terrain/satellite/satellite.png"
+TERRAIN_LAYER_NAME     = f"{MAP_NAME}_grass"
+TERRAIN_LAYER_TEX      = f"levels/{MAP_NAME}/art/terrains/{MAP_NAME}_grass/diffuse.png"
+SATELLITE_LAYER_NAME   = f"{MAP_NAME}_satellite"
+SATELLITE_LAYER_TEX    = f"levels/{MAP_NAME}/art/terrain/satellite/satellite.png"
 
 
 def _norm_to_uint16(elevation: np.ndarray, max_h: float) -> np.ndarray:
@@ -53,7 +52,7 @@ def write_ter(path: Path | str,
               max_height: float = MAX_TERRAIN_HEIGHT,
               use_satellite: bool = False) -> None:
     """
-    Write a .ter file from an elevation array.
+    Write a BeamNG TerrainFile v9 .ter from an elevation array.
 
     Parameters
     ----------
@@ -67,26 +66,30 @@ def write_ter(path: Path | str,
     if h != GRID_SIZE or w != GRID_SIZE:
         raise ValueError(f"elevation must be ({GRID_SIZE}, {GRID_SIZE}), got ({h}, {w})")
 
-    heights  = _norm_to_uint16(elevation, max_height)
-    flags    = np.zeros((GRID_SIZE, GRID_SIZE), dtype=np.uint8)
-    coverage = np.full((GRID_SIZE, GRID_SIZE), 255, dtype=np.uint8)
+    size = BLOCK_SIZE  # v9 stores size² samples, not (size+1)²; world width
+                       # = size * squareSize (squareSize on TerrainBlock).
 
-    layer_name = SATELLITE_LAYER_NAME if use_satellite else TERRAIN_LAYER_NAME
-    layer_tex  = SATELLITE_LAYER_TEX  if use_satellite else TERRAIN_LAYER_TEX
+    # Input row 0 = north (y = +WORLD_HALF); v9 row 0 = south (y = -WORLD_HALF).
+    # Drop input row 0 (north edge) and the last column (east edge) so the
+    # sample lattice lands exactly on world -WORLD_HALF + i*SQUARE_SIZE,
+    # matching the TerrainBlock's squareSize and SW-corner position.
+    grid = elevation[1:][::-1, :size]                     # rows 1024..1, cols 0..1023
+
+    heights   = _norm_to_uint16(grid, max_height).astype("<u2")
+    layermap  = np.zeros((size, size), dtype=np.uint8)    # material 0 everywhere
+
+    material_name = SATELLITE_LAYER_NAME if use_satellite else TERRAIN_LAYER_NAME
 
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("wb") as f:
-        f.write(_MAGIC)
-        f.write(struct.pack("<I", _VERSION))
-        f.write(struct.pack("<I", BLOCK_SIZE))
-        f.write(struct.pack("<I", 1))          # numLayers
-
-        f.write(heights.tobytes())
-        f.write(flags.tobytes())
-
-        f.write(layer_name.encode() + b"\x00")
-        f.write(layer_tex.encode()  + b"\x00")
-        f.write(coverage.tobytes())
+        f.write(struct.pack("B", 9))                      # version 9
+        f.write(struct.pack("<I", size))                  # grid size (power of two)
+        f.write(heights.tobytes())                        # heightMap, row 0 = south
+        f.write(layermap.tobytes())                       # layerMap, row 0 = south
+        f.write(struct.pack("<I", 1))                     # materialCount = 1
+        name_bytes = material_name.encode("utf-8")
+        f.write(struct.pack("B", len(name_bytes)))        # length-prefixed string
+        f.write(name_bytes)
 
     size_mb = path.stat().st_size / 1_048_576
     log.info("Wrote %s (%.1f MB)", path, size_mb)

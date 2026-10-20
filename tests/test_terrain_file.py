@@ -1,4 +1,4 @@
-"""Tests for .ter binary format and PNG heightmap — v3.0 (1025×1025 grid)."""
+"""Tests for .ter binary format (BeamNG TerrainFile v9) and PNG heightmap."""
 
 import struct
 from pathlib import Path
@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 
 from tools.terrain_file import write_ter, write_heightmap_png, write_preview_png
-from tools.constants import BLOCK_SIZE, GRID_SIZE, MAX_TERRAIN_HEIGHT
+from tools.constants import BLOCK_SIZE, GRID_SIZE, MAX_TERRAIN_HEIGHT, SQUARE_SIZE
 
 
 @pytest.fixture
@@ -29,46 +29,46 @@ def varied_elev():
 
 def _read_ter(path: Path) -> dict:
     with path.open("rb") as f:
-        magic   = f.read(4)
-        version = struct.unpack("<I", f.read(4))[0]
-        bsize   = struct.unpack("<I", f.read(4))[0]
-        nlayers = struct.unpack("<I", f.read(4))[0]
-        n_verts = (bsize + 1) ** 2
-        heights = np.frombuffer(f.read(n_verts * 2), dtype="<u2")
-        flags   = np.frombuffer(f.read(n_verts),     dtype="u1")
-    return dict(magic=magic, version=version, bsize=bsize,
-                nlayers=nlayers, heights=heights, flags=flags,
-                n_verts=n_verts)
+        version = struct.unpack("B", f.read(1))[0]
+        size    = struct.unpack("<I", f.read(4))[0]
+        n       = size * size
+        heights = np.frombuffer(f.read(n * 2), dtype="<u2")
+        layermap= np.frombuffer(f.read(n),     dtype="u1")
+        matcnt  = struct.unpack("<I", f.read(4))[0]
+        names   = []
+        for _ in range(matcnt):
+            ln = struct.unpack("B", f.read(1))[0]
+            names.append(f.read(ln).decode("utf-8"))
+    return dict(version=version, size=size, heights=heights,
+                layermap=layermap, material_names=names)
 
 
 class TestWriteTerHeader:
-    def test_magic(self, flat_elev, tmp_path):
-        p = tmp_path / "t.ter"
-        write_ter(p, flat_elev)
-        assert _read_ter(p)["magic"] == b"TERR"
-
     def test_version(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
         write_ter(p, flat_elev)
-        assert _read_ter(p)["version"] == 2
+        assert _read_ter(p)["version"] == 9
 
-    def test_block_size_is_1024(self, flat_elev, tmp_path):
+    def test_size_is_power_of_two(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
         write_ter(p, flat_elev)
-        assert _read_ter(p)["bsize"] == BLOCK_SIZE
+        size = _read_ter(p)["size"]
+        assert size == BLOCK_SIZE  # 1024
+        assert (size & (size - 1)) == 0  # power of two
 
-    def test_num_layers(self, flat_elev, tmp_path):
-        p = tmp_path / "t.ter"
-        write_ter(p, flat_elev)
-        assert _read_ter(p)["nlayers"] == 1
-
-
-class TestWriteTerHeights:
-    def test_height_count_is_1025_squared(self, flat_elev, tmp_path):
+    def test_single_material(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
         write_ter(p, flat_elev)
         d = _read_ter(p)
-        assert len(d["heights"]) == GRID_SIZE ** 2  # 1025*1025 = 1 050 625
+        assert len(d["material_names"]) == 1
+
+
+class TestWriteTerHeights:
+    def test_height_count_is_size_squared(self, flat_elev, tmp_path):
+        p = tmp_path / "t.ter"
+        write_ter(p, flat_elev)
+        d = _read_ter(p)
+        assert len(d["heights"]) == d["size"] ** 2  # 1024²
 
     def test_flat_terrain_constant(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
@@ -83,11 +83,31 @@ class TestWriteTerHeights:
         actual   = int(_read_ter(p)["heights"][0])
         assert abs(actual - expected) <= 1
 
-    def test_ramp_monotonic(self, ramp_elev, tmp_path):
+    def test_row0_is_south(self, flat_elev, tmp_path):
+        """Row 0 = south: a north-low/south-high ramp (varying by row)
+        should have its higher values in the first v9 rows."""
+        north_low = np.linspace(50.0, 90.0, GRID_SIZE, dtype=np.float32)
+        ramp_ns = np.tile(north_low[:, None], (1, GRID_SIZE))  # row 0 (north)=50, row -1 (south)=90
         p = tmp_path / "t.ter"
-        write_ter(p, ramp_elev)
-        row = _read_ter(p)["heights"][:GRID_SIZE]
-        assert all(row[i] <= row[i+1] for i in range(len(row)-1))
+        write_ter(p, ramp_ns)
+        d = _read_ter(p)
+        size = d["size"]
+        first_row = d["heights"][:size]   # v9 row 0 = south = high
+        last_row  = d["heights"][-size:]  # v9 last row = north = low
+        assert first_row.mean() > last_row.mean()
+
+    def test_col0_is_west(self, flat_elev, tmp_path):
+        """Col 0 = west: a west-low/east-high ramp (varying by column)
+        should have its lower values in the first column."""
+        west_low = np.linspace(50.0, 90.0, GRID_SIZE, dtype=np.float32)
+        ramp_we = np.tile(west_low, (GRID_SIZE, 1))  # col 0 (west)=50, col -1 (east)=90
+        p = tmp_path / "t.ter"
+        write_ter(p, ramp_we)
+        d = _read_ter(p)
+        size = d["size"]
+        col0 = d["heights"][::size]      # col 0 = west = low
+        colN = d["heights"][size-1::size] # col -1 = east = high
+        assert col0.mean() < colN.mean()
 
     def test_varied_range(self, varied_elev, tmp_path):
         p = tmp_path / "t.ter"
@@ -103,17 +123,18 @@ class TestWriteTerHeights:
         assert d["heights"].min() >= 0
 
 
-class TestWriteTerFlags:
-    def test_flags_all_zero(self, flat_elev, tmp_path):
-        p = tmp_path / "t.ter"
-        write_ter(p, flat_elev)
-        assert _read_ter(p)["flags"].max() == 0
-
-    def test_flags_count_matches_heights(self, flat_elev, tmp_path):
+class TestWriteTerLayermap:
+    def test_layermap_all_zero(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
         write_ter(p, flat_elev)
         d = _read_ter(p)
-        assert len(d["flags"]) == len(d["heights"])
+        assert d["layermap"].max() == 0  # material 0 everywhere
+
+    def test_layermap_count_matches_heights(self, flat_elev, tmp_path):
+        p = tmp_path / "t.ter"
+        write_ter(p, flat_elev)
+        d = _read_ter(p)
+        assert len(d["layermap"]) == len(d["heights"])
 
 
 class TestWriteTerMisc:
@@ -127,12 +148,12 @@ class TestWriteTerMisc:
         with pytest.raises(ValueError):
             write_ter(tmp_path / "bad.ter", bad)
 
-    def test_file_size_approx_4mb(self, flat_elev, tmp_path):
+    def test_file_size_approx_3mb(self, flat_elev, tmp_path):
         p = tmp_path / "t.ter"
         write_ter(p, flat_elev)
         size_mb = p.stat().st_size / 1_048_576
-        # 1025² × (2 + 1 + 1) bytes + strings ≈ 4 MB
-        assert 3.5 < size_mb < 5.0, f"Unexpected .ter size: {size_mb:.2f} MB"
+        # 1024² × (2 + 1) bytes + strings ≈ 3 MB
+        assert 2.5 < size_mb < 3.5, f"Unexpected .ter size: {size_mb:.2f} MB"
 
 
 class TestPng:
