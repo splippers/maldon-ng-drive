@@ -129,8 +129,17 @@ def _sample(images, min_spacing_m, max_images):
 def _to_photo(img, lat, lon):
     mid = img["id"]
     url = img.get("thumb_1024_url")
-    captured = img.get("captured_at") or ""
-    date = captured[:10] if captured else ""
+    captured = img.get("captured_at")
+    if isinstance(captured, (int, float)):
+        import datetime
+        try:
+            date = datetime.datetime.utcfromtimestamp(captured).strftime("%Y-%m-%d")
+        except (ValueError, OSError, OverflowError):
+            date = ""
+    elif isinstance(captured, str):
+        date = captured[:10]
+    else:
+        date = ""
     heading = img.get("compass_angle")
     if heading is None:
         heading = 0

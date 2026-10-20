@@ -22,6 +22,12 @@ def _img(i, lat, lon, angle=90.0, captured="2021-05-01T00:00:00Z", url="http://x
     }
 
 
+def test_to_photo_handles_int_captured_at():
+    img = _img(7, 51.7, 0.66, captured=1609459200)  # 2021-01-01
+    p = fs._to_photo(img, 51.7, 0.66)
+    assert p["date"] == "2021-01-01"
+
+
 def test_to_photo_fields():
     img = _img(42, 51.7, 0.66, angle=123.0, captured="2020-01-02T00:00:00Z")
     p = fs._to_photo(img, 51.7, 0.66)
