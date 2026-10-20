@@ -69,11 +69,13 @@ MOD_ZIP    = ROOT / f"{MAP_NAME}.zip"
 
 
 def main(
-    online:         bool = False,
-    pack_zip:       bool = False,
-    do_satellite:   bool = False,
-    satellite_zoom: int  = 17,
-    lidar:          bool = False,
+    online:           bool = False,
+    pack_zip:         bool = False,
+    do_satellite:     bool = False,
+    satellite_zoom:   int  = 17,
+    lidar:            bool = False,
+    do_streetview:    bool = False,
+    mapillary_token:  str  = None,
 ) -> None:
     log.info("=== ng-drive map generator — %s v%s ===", MAP_NAME, MAP_VERSION)
 
@@ -131,9 +133,21 @@ def main(
     log.info("Step 7/9 – extract railway network for this map")
     railway = build_railway_objects(elev_fn)
 
-    # 8. Historical photo billboards
+    # 8. Historical photo billboards (+ optional street-level imagery)
     log.info("Step 8/9 – place historical photo billboards")
     write_billboard_dae()
+    if do_streetview:
+        try:
+            from tools.fetch_streetview import fetch_streetview, merge_manifest
+            token = mapillary_token or __import__("os").environ.get("MAPILLARY_ACCESS_TOKEN") or __import__("os").environ.get("MAPILLARY_TOKEN")
+            if token:
+                sv_photos = fetch_streetview(BBOX, token)
+                if sv_photos:
+                    merge_manifest(sv_photos)
+            else:
+                log.warning("Street-view requested but no Mapillary token provided; skipping.")
+        except Exception as e:
+            log.warning("Street-view fetch failed: %s", e)
     photos = build_photo_objects(elev_fn)
 
     # 9. Level JSON
@@ -172,7 +186,11 @@ if __name__ == "__main__":
     ap.add_argument("--satellite", action="store_true")
     ap.add_argument("--zoom",      type=int, default=17)
     ap.add_argument("--zip",       action="store_true")
+    ap.add_argument("--streetview", action="store_true",
+                    help="Fetch Mapillary street-level imagery (needs MAPILLARY_ACCESS_TOKEN)")
+    ap.add_argument("--mapillary-token", default=None)
     args = ap.parse_args()
     main(online=args.online, pack_zip=args.zip,
          do_satellite=args.satellite, satellite_zoom=args.zoom,
-         lidar=args.lidar)
+         lidar=args.lidar, do_streetview=args.streetview,
+         mapillary_token=args.mapillary_token)
