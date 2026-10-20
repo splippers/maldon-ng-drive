@@ -1,0 +1,11 @@
+{
+  "maldon_grass": {
+    "class": "TerrainMaterial",
+    "internalName": "maldon_grass",
+    "diffuseMap": "/levels/maldon/art/terrains/maldon_grass_diffuse.png",
+    "diffuseSize": 64.0,
+    "groundmodelName": "GRASS",
+    "annotation": "GRASS",
+    "useSideProjection": false
+  }
+}

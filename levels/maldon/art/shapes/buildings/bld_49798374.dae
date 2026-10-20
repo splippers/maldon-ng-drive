@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Royal Mail" name="Royal Mail">
+      <mesh>
+        <source id="geo_Royal Mail_pos">
+          <float_array id="geo_Royal Mail_pos_arr" count="90">967.521 410.481 2.856 973.448 400.678 2.856 981.047 405.957 2.856 991.358 391.098 2.856 989.823 390.031 2.856 977.488 381.474 2.856 978.356 380.229 2.856 970.151 374.538 2.856 969.325 375.717 2.856 966.599 373.827 2.856 962.235 380.106 2.856 958.249 377.339 2.856 953.183 384.641 2.856 955.055 385.952 2.856 947.842 396.422 2.856 967.521 410.481 10.856 973.448 400.678 10.856 981.047 405.957 10.856 991.358 391.098 10.856 989.823 390.031 10.856 977.488 381.474 10.856 978.356 380.229 10.856 970.151 374.538 10.856 969.325 375.717 10.856 966.599 373.827 10.856 962.235 380.106 10.856 958.249 377.339 10.856 953.183 384.641 10.856 955.055 385.952 10.856 947.842 396.422 10.856</float_array>
+          <technique_common>
+            <accessor source="#geo_Royal Mail_pos_arr" count="30" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Royal Mail_verts">
+          <input semantic="POSITION" source="#geo_Royal Mail_pos"/>
+        </vertices>
+        <triangles count="43" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Royal Mail_verts" offset="0"/>
+          <p>0 1 16 0 16 15 1 2 17 1 17 16 2 3 18 2 18 17 3 4 19 3 19 18 4 5 20 4 20 19 5 6 21 5 21 20 6 7 22 6 22 21 7 8 23 7 23 22 8 9 24 8 24 23 9 10 25 9 25 24 10 11 26 10 26 25 11 12 27 11 27 26 12 13 28 12 28 27 13 14 29 13 29 28 14 0 15 14 15 29 29 16 15 16 18 17 29 18 16 29 19 18 29 20 19 29 21 20 21 23 22 29 23 21 23 25 24 29 25 23 25 27 26 25 28 27 25 29 28</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Royal Mail" type="NODE">
+        <instance_geometry url="#geo_Royal Mail">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

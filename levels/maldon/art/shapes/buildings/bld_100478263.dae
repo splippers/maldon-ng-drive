@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_bld_100478263" name="bld_100478263">
+      <mesh>
+        <source id="geo_bld_100478263_pos">
+          <float_array id="geo_bld_100478263_pos_arr" count="90">350.378 -209.641 40.537 347.776 -208.586 40.537 344.830 -208.597 40.537 342.063 -209.775 40.537 340.094 -211.809 40.537 338.986 -214.621 40.537 339.089 -217.644 40.537 340.418 -220.411 40.537 342.152 -222.045 40.537 345.394 -223.267 40.537 348.506 -222.989 40.537 351.390 -221.333 40.537 353.076 -218.999 40.537 353.764 -215.899 40.537 352.973 -212.553 40.537 350.378 -209.641 48.537 347.776 -208.586 48.537 344.830 -208.597 48.537 342.063 -209.775 48.537 340.094 -211.809 48.537 338.986 -214.621 48.537 339.089 -217.644 48.537 340.418 -220.411 48.537 342.152 -222.045 48.537 345.394 -223.267 48.537 348.506 -222.989 48.537 351.390 -221.333 48.537 353.076 -218.999 48.537 353.764 -215.899 48.537 352.973 -212.553 48.537</float_array>
+          <technique_common>
+            <accessor source="#geo_bld_100478263_pos_arr" count="30" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_bld_100478263_verts">
+          <input semantic="POSITION" source="#geo_bld_100478263_pos"/>
+        </vertices>
+        <triangles count="43" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_bld_100478263_verts" offset="0"/>
+          <p>0 1 16 0 16 15 1 2 17 1 17 16 2 3 18 2 18 17 3 4 19 3 19 18 4 5 20 4 20 19 5 6 21 5 21 20 6 7 22 6 22 21 7 8 23 7 23 22 8 9 24 8 24 23 9 10 25 9 25 24 10 11 26 10 26 25 11 12 27 11 27 26 12 13 28 12 28 27 13 14 29 13 29 28 14 0 15 14 15 29 29 15 16 29 16 17 29 17 18 29 18 19 29 19 20 29 20 21 29 21 22 29 22 23 29 23 24 29 24 25 29 25 26 29 26 27 27 28 29</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="bld_100478263" type="NODE">
+        <instance_geometry url="#geo_bld_100478263">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

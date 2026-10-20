@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_QD" name="QD">
+      <mesh>
+        <source id="geo_QD_pos">
+          <float_array id="geo_QD_pos_arr" count="78">968.657 -3.368 31.012 969.765 -3.301 31.012 971.114 -3.512 31.012 971.982 6.202 31.012 986.003 5.524 31.012 985.569 -19.205 31.012 984.406 -35.564 31.012 980.297 -35.276 31.012 978.893 -46.067 31.012 967.514 -45.434 31.012 970.460 -12.536 31.012 968.974 -12.570 31.012 967.900 -12.470 31.012 968.657 -3.368 39.012 969.765 -3.301 39.012 971.114 -3.512 39.012 971.982 6.202 39.012 986.003 5.524 39.012 985.569 -19.205 39.012 984.406 -35.564 39.012 980.297 -35.276 39.012 978.893 -46.067 39.012 967.514 -45.434 39.012 970.460 -12.536 39.012 968.974 -12.570 39.012 967.900 -12.470 39.012</float_array>
+          <technique_common>
+            <accessor source="#geo_QD_pos_arr" count="26" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_QD_verts">
+          <input semantic="POSITION" source="#geo_QD_pos"/>
+        </vertices>
+        <triangles count="37" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_QD_verts" offset="0"/>
+          <p>0 1 14 0 14 13 1 2 15 1 15 14 2 3 16 2 16 15 3 4 17 3 17 16 4 5 18 4 18 17 5 6 19 5 19 18 6 7 20 6 20 19 7 8 21 7 21 20 8 9 22 8 22 21 9 10 23 9 23 22 10 11 24 10 24 23 11 12 25 11 25 24 12 0 13 12 13 25 25 14 13 25 15 14 15 17 16 25 17 15 17 19 18 17 20 19 20 22 21 17 22 20 17 23 22 25 23 17 23 25 24</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="QD" type="NODE">
+        <instance_geometry url="#geo_QD">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

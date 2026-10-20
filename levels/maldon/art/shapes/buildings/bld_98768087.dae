@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_The White Horse" name="The White Horse">
+      <mesh>
+        <source id="geo_The White Horse_pos">
+          <float_array id="geo_The White Horse_pos_arr" count="78">888.975 7.858 32.364 884.280 8.902 32.364 882.876 0.945 32.364 881.135 -9.636 32.364 878.801 -22.483 32.364 886.359 -23.650 32.364 886.903 -17.104 32.364 887.020 -15.982 32.364 888.066 -16.093 32.364 888.376 -10.836 32.364 889.305 -10.914 32.364 888.899 -6.168 32.364 888.410 -6.079 32.364 888.975 7.858 40.364 884.280 8.902 40.364 882.876 0.945 40.364 881.135 -9.636 40.364 878.801 -22.483 40.364 886.359 -23.650 40.364 886.903 -17.104 40.364 887.020 -15.982 40.364 888.066 -16.093 40.364 888.376 -10.836 40.364 889.305 -10.914 40.364 888.899 -6.168 40.364 888.410 -6.079 40.364</float_array>
+          <technique_common>
+            <accessor source="#geo_The White Horse_pos_arr" count="26" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_The White Horse_verts">
+          <input semantic="POSITION" source="#geo_The White Horse_pos"/>
+        </vertices>
+        <triangles count="37" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_The White Horse_verts" offset="0"/>
+          <p>0 1 14 0 14 13 1 2 15 1 15 14 2 3 16 2 16 15 3 4 17 3 17 16 4 5 18 4 18 17 5 6 19 5 19 18 6 7 20 6 20 19 7 8 21 7 21 20 8 9 22 8 22 21 9 10 23 9 23 22 10 11 24 10 24 23 11 12 25 11 25 24 12 0 13 12 13 25 25 13 14 25 14 15 25 15 16 25 16 17 17 18 19 17 19 20 25 17 20 25 20 21 25 21 22 25 22 23 23 24 25</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="The White Horse" type="NODE">
+        <instance_geometry url="#geo_The White Horse">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

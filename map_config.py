@@ -19,9 +19,17 @@ MAP_DESC    = (
 )
 MAP_AUTHOR = "ng-drive-network"
 
+# Level-selector metadata (BeamNG LevelInfo schema)
+MAP_BIOME       = "English Estuary"
+MAP_ROADS       = "OSM: A414 primary, B1018, residential, service"
+MAP_SUITABLEFOR = "Free Roam, Point-to-Point"
+MAP_FEATURES    = ("Environment Agency LiDAR 2 m terrain, Blackwater estuary, "
+                   "OSM game elements (medians, barriers, sidewalks), "
+                   "historical railway trackbed")
+
 # ── GPS anchor ────────────────────────────────────────────────────────────────
 # Centre on Maldon East station site (demolished; approx. location).
-# GPS ref: 51.7314°N, 0.6633°E  (TL 856 072)
+# GPS ref: 51.7314°N, 0.6633°E  (BNG TL 840 069)
 CENTER_LAT = 51.7314
 CENTER_LON =  0.6633
 
@@ -50,3 +58,17 @@ SPAWN_POINTS = [
     ("spawn_trackbed_west",    -950, -130,  12.0,   90),  # railway entry ←east (toward Witham)
     ("spawn_langford_road",    -400,  200,  15.0,  180),  # B1018 north, →south
 ]
+
+# ── Spawn labels ──────────────────────────────────────────────────────────────
+# Human-readable names shown in the level-selector spawn menu (info.json).
+# Any spawn without an entry gets a title-cased name derived from its objectname.
+SPAWN_LABELS = {
+    "spawn_station_platform": "Maldon East Station Platform",
+    "spawn_station_approach": "Station Road Approach",
+    "spawn_hythe_quay":       "Hythe Quay (Blackwater)",
+    "spawn_market_hill":      "Market Hill (Town Centre)",
+    "spawn_promenade":        "Promenade Park",
+    "spawn_trackbed_east":    "Trackbed — east end",
+    "spawn_trackbed_west":    "Trackbed — west end (toward Witham)",
+    "spawn_langford_road":    "Langford Road (B1018)",
+}

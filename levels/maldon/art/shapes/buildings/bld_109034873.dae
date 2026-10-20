@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_bld_109034873" name="bld_109034873">
+      <mesh>
+        <source id="geo_bld_109034873_pos">
+          <float_array id="geo_bld_109034873_pos_arr" count="48">918.284 -1021.223 10.353 909.274 -1022.501 10.353 907.505 -1009.931 10.353 911.422 -1009.376 10.353 912.034 -1013.699 10.353 914.003 -1013.421 10.353 913.796 -1011.965 10.353 916.915 -1011.520 10.353 918.284 -1021.223 18.353 909.274 -1022.501 18.353 907.505 -1009.931 18.353 911.422 -1009.376 18.353 912.034 -1013.699 18.353 914.003 -1013.421 18.353 913.796 -1011.965 18.353 916.915 -1011.520 18.353</float_array>
+          <technique_common>
+            <accessor source="#geo_bld_109034873_pos_arr" count="16" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_bld_109034873_verts">
+          <input semantic="POSITION" source="#geo_bld_109034873_pos"/>
+        </vertices>
+        <triangles count="22" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_bld_109034873_verts" offset="0"/>
+          <p>0 1 9 0 9 8 1 2 10 1 10 9 2 3 11 2 11 10 3 4 12 3 12 11 4 5 13 4 13 12 5 6 14 5 14 13 6 7 15 6 15 14 7 0 8 7 8 15 15 9 8 9 11 10 9 12 11 9 13 12 15 13 9 13 15 14</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="bld_109034873" type="NODE">
+        <instance_geometry url="#geo_bld_109034873">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

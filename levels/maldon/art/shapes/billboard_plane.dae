@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset><unit name="meter" meter="1"/><up_axis>Z_UP</up_axis></asset>
+  <library_effects>
+    <effect id="MatEffect">
+      <profile_COMMON>
+        <newparam sid="surface0"><surface type="2D"><init_from>TexImg</init_from></surface></newparam>
+        <newparam sid="sampler0"><sampler2D><source>surface0</source></sampler2D></newparam>
+        <technique sid="common">
+          <phong>
+            <diffuse><texture texture="sampler0" texcoord="UVSET0"/></diffuse>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_images>
+    <image id="TexImg" name="TexImg"><init_from>./placeholder.png</init_from></image>
+  </library_images>
+  <library_materials>
+    <material id="Mat" name="billboard"><instance_effect url="#MatEffect"/></material>
+  </library_materials>
+  <library_geometries>
+    <geometry id="BillboardMesh">
+      <mesh>
+        <source id="pos"><float_array count="36">-0.500000 0.000000 0.000000 0.500000 0.000000 1.000000 0.500000 0.000000 0.000000 -0.500000 0.000000 0.000000 -0.500000 0.000000 1.000000 0.500000 0.000000 1.000000 -0.500000 0.000000 0.000000 0.500000 0.000000 0.000000 0.500000 0.000000 1.000000 -0.500000 0.000000 0.000000 0.500000 0.000000 1.000000 -0.500000 0.000000 1.000000</float_array>
+          <technique_common><accessor source="#pos-array" count="12" stride="3">
+            <param name="X" type="float"/><param name="Y" type="float"/><param name="Z" type="float"/>
+          </accessor></technique_common></source>
+        <source id="nrm"><float_array count="36">0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000 0.000000 -1.000000 0.000000</float_array>
+          <technique_common><accessor source="#nrm-array" count="12" stride="3">
+            <param name="X" type="float"/><param name="Y" type="float"/><param name="Z" type="float"/>
+          </accessor></technique_common></source>
+        <source id="uv"><float_array count="24">0.000000 0.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 1.000000 1.000000 0.000000 0.000000 0.000000 0.000000 1.000000 1.000000 0.000000 0.000000 1.000000 1.000000 1.000000</float_array>
+          <technique_common><accessor source="#uv-array" count="12" stride="2">
+            <param name="S" type="float"/><param name="T" type="float"/>
+          </accessor></technique_common></source>
+        <vertices id="verts"><input semantic="POSITION" source="#pos"/></vertices>
+        <triangles count="4" material="Mat">
+          <input semantic="VERTEX"   source="#verts" offset="0"/>
+          <input semantic="NORMAL"   source="#nrm"   offset="1"/>
+          <input semantic="TEXCOORD" source="#uv"    offset="2" set="0"/>
+          <p>0 0 0 1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 7 7 7 8 8 8 9 9 9 10 10 10 11 11 11</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene">
+      <node id="BillboardNode" type="NODE">
+        <instance_geometry url="#BillboardMesh">
+          <bind_material><technique_common>
+            <instance_material symbol="Mat" target="#Mat">
+              <bind_vertex_input semantic="UVSET0" input_semantic="TEXCOORD" input_set="0"/>
+            </instance_material>
+          </technique_common></bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene><instance_visual_scene url="#Scene"/></scene>
+</COLLADA>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_M&S Food" name="M&S Food">
+      <mesh>
+        <source id="geo_M&S Food_pos">
+          <float_array id="geo_M&S Food_pos_arr" count="84">967.900 -12.470 31.118 965.456 -28.363 31.118 963.185 -41.666 31.118 954.305 -39.643 31.118 952.047 -49.801 31.118 946.768 -48.690 31.118 949.528 -36.931 31.118 943.815 -35.231 31.118 947.787 -18.049 31.118 949.494 -8.013 31.118 950.203 -8.002 31.118 951.517 7.268 31.118 969.221 6.202 31.118 968.657 -3.368 31.118 967.900 -12.470 39.118 965.456 -28.363 39.118 963.185 -41.666 39.118 954.305 -39.643 39.118 952.047 -49.801 39.118 946.768 -48.690 39.118 949.528 -36.931 39.118 943.815 -35.231 39.118 947.787 -18.049 39.118 949.494 -8.013 39.118 950.203 -8.002 39.118 951.517 7.268 39.118 969.221 6.202 39.118 968.657 -3.368 39.118</float_array>
+          <technique_common>
+            <accessor source="#geo_M&S Food_pos_arr" count="28" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_M&S Food_verts">
+          <input semantic="POSITION" source="#geo_M&S Food_pos"/>
+        </vertices>
+        <triangles count="40" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_M&S Food_verts" offset="0"/>
+          <p>0 1 15 0 15 14 1 2 16 1 16 15 2 3 17 2 17 16 3 4 18 3 18 17 4 5 19 4 19 18 5 6 20 5 20 19 6 7 21 6 21 20 7 8 22 7 22 21 8 9 23 8 23 22 9 10 24 9 24 23 10 11 25 10 25 24 11 12 26 11 26 25 12 13 27 12 27 26 13 0 14 13 14 27 27 15 14 27 16 15 27 17 16 17 19 18 27 19 17 27 20 19 27 21 20 27 22 21 22 24 23 27 24 22 27 25 24 25 27 26</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="M&S Food" type="NODE">
+        <instance_geometry url="#geo_M&S Food">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

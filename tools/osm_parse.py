@@ -10,7 +10,6 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 from tools.constants import OSM_CACHE, gps_to_world
 
@@ -46,6 +45,7 @@ class OsmRoad:
     width:    float
     material: str
     gps_nodes: list[tuple[float, float]]   # (lat, lon)
+    tags:     dict[str, str] = field(default_factory=dict)  # full OSM tags
 
 
 @dataclass
@@ -162,6 +162,7 @@ def load(path: Path | str | None = None) -> OsmData:
                 width    = float(tags.get("width",  HIGHWAY_WIDTH.get(hw, 4.0))),
                 material = HIGHWAY_MATERIAL.get(hw, "road_rubber_sticky"),
                 gps_nodes= gps,
+                tags     = dict(tags),
             ))
 
         elif "building" in tags:

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_The Blue Boar" name="The Blue Boar">
+      <mesh>
+        <source id="geo_The Blue Boar_pos">
+          <float_array id="geo_The Blue Boar_pos_arr" count="144">864.491 81.420 32.420 863.851 80.298 32.420 870.046 77.042 32.420 866.948 70.896 32.420 880.137 63.049 32.420 879.235 61.282 32.420 881.259 60.271 32.420 880.887 59.315 32.420 885.106 57.125 32.420 884.549 55.970 32.420 884.143 55.147 32.420 868.607 64.094 32.420 865.317 57.759 32.420 880.302 48.734 32.420 881.596 48.212 32.420 882.236 49.435 32.420 888.362 47.190 32.420 891.067 52.924 32.420 897.696 67.095 32.420 890.551 69.729 32.420 876.137 76.986 32.420 877.521 79.764 32.420 867.643 84.621 32.420 865.682 80.787 32.420 864.491 81.420 38.420 863.851 80.298 38.420 870.046 77.042 38.420 866.948 70.896 38.420 880.137 63.049 38.420 879.235 61.282 38.420 881.259 60.271 38.420 880.887 59.315 38.420 885.106 57.125 38.420 884.549 55.970 38.420 884.143 55.147 38.420 868.607 64.094 38.420 865.317 57.759 38.420 880.302 48.734 38.420 881.596 48.212 38.420 882.236 49.435 38.420 888.362 47.190 38.420 891.067 52.924 38.420 897.696 67.095 38.420 890.551 69.729 38.420 876.137 76.986 38.420 877.521 79.764 38.420 867.643 84.621 38.420 865.682 80.787 38.420</float_array>
+          <technique_common>
+            <accessor source="#geo_The Blue Boar_pos_arr" count="48" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_The Blue Boar_verts">
+          <input semantic="POSITION" source="#geo_The Blue Boar_pos"/>
+        </vertices>
+        <triangles count="70" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_The Blue Boar_verts" offset="0"/>
+          <p>0 1 25 0 25 24 1 2 26 1 26 25 2 3 27 2 27 26 3 4 28 3 28 27 4 5 29 4 29 28 5 6 30 5 30 29 6 7 31 6 31 30 7 8 32 7 32 31 8 9 33 8 33 32 9 10 34 9 34 33 10 11 35 10 35 34 11 12 36 11 36 35 12 13 37 12 37 36 13 14 38 13 38 37 14 15 39 14 39 38 15 16 40 15 40 39 16 17 41 16 41 40 17 18 42 17 42 41 18 19 43 18 43 42 19 20 44 19 44 43 20 21 45 20 45 44 21 22 46 21 46 45 22 23 47 22 47 46 23 0 24 23 24 47 47 24 25 47 25 26 26 27 28 28 29 30 30 31 32 28 30 32 26 28 32 34 35 36 34 36 37 34 37 38 33 34 38 32 33 38 32 38 39 32 39 40 32 40 41 26 32 41 26 41 42 26 42 43 47 26 43 47 43 44 47 44 45 45 46 47</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="The Blue Boar" type="NODE">
+        <instance_geometry url="#geo_The Blue Boar">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

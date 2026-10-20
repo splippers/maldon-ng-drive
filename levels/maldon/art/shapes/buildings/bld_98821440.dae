@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Holden" name="Holden">
+      <mesh>
+        <source id="geo_Holden_pos">
+          <float_array id="geo_Holden_pos_arr" count="72">870.679 23.939 32.998 860.540 25.017 32.998 861.352 30.574 32.998 862.419 30.408 32.998 862.591 31.819 32.998 864.387 31.730 32.998 864.339 30.152 32.998 867.079 29.763 32.998 867.203 30.274 32.998 868.483 30.108 32.998 868.786 30.963 32.998 871.711 31.174 32.998 870.679 23.939 40.998 860.540 25.017 40.998 861.352 30.574 40.998 862.419 30.408 40.998 862.591 31.819 40.998 864.387 31.730 40.998 864.339 30.152 40.998 867.079 29.763 40.998 867.203 30.274 40.998 868.483 30.108 40.998 868.786 30.963 40.998 871.711 31.174 40.998</float_array>
+          <technique_common>
+            <accessor source="#geo_Holden_pos_arr" count="24" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Holden_verts">
+          <input semantic="POSITION" source="#geo_Holden_pos"/>
+        </vertices>
+        <triangles count="34" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Holden_verts" offset="0"/>
+          <p>0 1 13 0 13 12 1 2 14 1 14 13 2 3 15 2 15 14 3 4 16 3 16 15 4 5 17 4 17 16 5 6 18 5 18 17 6 7 19 6 19 18 7 8 20 7 20 19 8 9 21 8 21 20 9 10 22 9 22 21 10 11 23 10 23 22 11 0 12 11 12 23 23 13 12 13 15 14 15 17 16 13 17 15 13 18 17 13 19 18 19 21 20 13 21 19 23 21 13 21 23 22</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Holden" type="NODE">
+        <instance_geometry url="#geo_Holden">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

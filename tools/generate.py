@@ -7,14 +7,15 @@ All generation logic lives in tools/ and is shared across all ng-drive repos.
 
 Usage
 ─────
-    python3 tools/generate.py                     # offline (cached OSM + SRTM)
+    python3 tools/generate.py                     # offline (cached OSM + LiDAR/SRTM)
+    python3 tools/generate.py --lidar             # download EA LiDAR DTM 2 m terrain
     python3 tools/generate.py --satellite         # download aerial imagery
-    python3 tools/generate.py --online --satellite --zip
+    python3 tools/generate.py --online --lidar --satellite --zip
     python3 tools/generate.py --zoom 18           # higher-res satellite tiles
 
 Pipeline steps
 ──────────────
-    1. Elevation  : SRTM-30m cache → live API → synthetic procedural
+    1. Elevation  : EA LiDAR DTM 2 m → SRTM-30m cache → live API → synthetic
     2. Satellite  : ESRI WorldImagery tiles (optional, --satellite flag)
     3. Terrain    : binary .ter + 16-bit PNG heightmap + RGB preview
     4. OSM        : parse roads, buildings, water, vegetation
@@ -36,9 +37,12 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent.resolve()
 sys.path.insert(0, str(ROOT))
 
-from tools.constants       import MAP_NAME, MAP_VERSION, LEVELS_DIR, TERRAIN_DIR
+from tools.constants       import MAP_NAME, MAP_VERSION, LEVELS_DIR, TERRAIN_DIR, BLOCK_SIZE
 from tools.heightmap       import build_elevation, elev_at_world
-from tools.terrain_file    import write_ter, write_heightmap_png, write_preview_png
+from tools.terrain_file    import (write_ter, write_heightmap_png, write_preview_png,
+                                   write_terrain_json,
+                                   TERRAIN_LAYER_NAME, SATELLITE_LAYER_NAME)
+from tools.terrain_materials import write_terrain_materials
 from tools.osm_roads       import build_roads
 from tools.osm_parse       import load as parse_osm
 from tools.buildings       import build_building_objects
@@ -47,6 +51,7 @@ from tools.water           import build_water_objects
 from tools.vegetation      import build_vegetation_objects
 from tools.railway_network import build_railway_objects
 from tools.photo_spots     import build_photo_objects, write_billboard_dae
+from tools.game_elements   import build_game_elements
 from tools.level_builder   import build_level
 
 logging.basicConfig(
@@ -68,12 +73,13 @@ def main(
     pack_zip:       bool = False,
     do_satellite:   bool = False,
     satellite_zoom: int  = 17,
+    lidar:          bool = False,
 ) -> None:
     log.info("=== ng-drive map generator — %s v%s ===", MAP_NAME, MAP_VERSION)
 
     # 1. Elevation
-    log.info("Step 1/9 – build elevation (SRTM-30m + fBm)")
-    elev    = build_elevation(online=online)
+    log.info("Step 1/9 – build elevation (LiDAR DTM 2 m / SRTM-30m + fBm)")
+    elev    = build_elevation(online=online, lidar=lidar)
     elev_fn = lambda wx, wy: elev_at_world(elev, wx, wy)
 
     # 2. Satellite texture
@@ -95,6 +101,13 @@ def main(
     write_heightmap_png(HEIGHT_PNG, elev)
     write_preview_png(PREVIEW, elev)
 
+    materials = [SATELLITE_LAYER_NAME if has_sat else TERRAIN_LAYER_NAME]
+    write_terrain_json(TERRAIN_DIR / f"{MAP_NAME}.terrain.json",
+                       f"/levels/{MAP_NAME}/terrainGrid/{MAP_NAME}.ter",
+                       BLOCK_SIZE, materials,
+                       heightmap_image=f"/levels/{MAP_NAME}/terrainGrid/{MAP_NAME}_height.png")
+    write_terrain_materials(LEVELS_DIR, MAP_NAME, materials)
+
     # 4. OSM data
     log.info("Step 4/9 – parse OSM data")
     osm = parse_osm()
@@ -105,6 +118,10 @@ def main(
     buildings  = build_building_objects(osm, elev_fn)
     water      = build_water_objects(osm, elev_fn)
     vegetation = build_vegetation_objects(osm, elev_fn)
+
+    # 5b. Game elements derived from OSM road semantics
+    log.info("Step 5b/9 – derive game elements (medians, barriers, furniture)")
+    elements = build_game_elements(osm.roads, elev_fn)
 
     # 6. 3D building meshes
     log.info("Step 6/9 – generate 3D building meshes")
@@ -129,6 +146,7 @@ def main(
         building_meshes = bld_meshes,
         railway         = railway,
         photos          = photos,
+        game_elements   = elements,
         out_path        = LEVEL_JSON,
     )
 
@@ -149,9 +167,12 @@ def _pack_zip() -> None:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="ng-drive map generator")
     ap.add_argument("--online",    action="store_true")
+    ap.add_argument("--lidar",     action="store_true",
+                    help="Download Environment Agency LiDAR DTM 2 m terrain (OGL)")
     ap.add_argument("--satellite", action="store_true")
     ap.add_argument("--zoom",      type=int, default=17)
     ap.add_argument("--zip",       action="store_true")
     args = ap.parse_args()
     main(online=args.online, pack_zip=args.zip,
-         do_satellite=args.satellite, satellite_zoom=args.zoom)
+         do_satellite=args.satellite, satellite_zoom=args.zoom,
+         lidar=args.lidar)

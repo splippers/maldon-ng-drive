@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Andy Harris Custom Cycles" name="Andy Harris Custom Cycles">
+      <mesh>
+        <source id="geo_Andy Harris Custom Cycles_pos">
+          <float_array id="geo_Andy Harris Custom Cycles_pos_arr" count="60">719.348 -228.969 26.911 723.223 -243.272 26.911 724.689 -248.718 26.911 726.548 -248.562 26.911 753.001 -246.451 26.911 750.949 -224.356 26.911 744.878 -224.790 26.911 745.463 -233.136 26.911 728.936 -234.014 26.911 728.276 -225.157 26.911 719.348 -228.969 34.911 723.223 -243.272 34.911 724.689 -248.718 34.911 726.548 -248.562 34.911 753.001 -246.451 34.911 750.949 -224.356 34.911 744.878 -224.790 34.911 745.463 -233.136 34.911 728.936 -234.014 34.911 728.276 -225.157 34.911</float_array>
+          <technique_common>
+            <accessor source="#geo_Andy Harris Custom Cycles_pos_arr" count="20" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Andy Harris Custom Cycles_verts">
+          <input semantic="POSITION" source="#geo_Andy Harris Custom Cycles_pos"/>
+        </vertices>
+        <triangles count="28" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Andy Harris Custom Cycles_verts" offset="0"/>
+          <p>0 1 11 0 11 10 1 2 12 1 12 11 2 3 13 2 13 12 3 4 14 3 14 13 4 5 15 4 15 14 5 6 16 5 16 15 6 7 17 6 17 16 7 8 18 7 18 17 8 9 19 8 19 18 9 0 10 9 10 19 19 10 11 19 11 12 19 12 13 14 15 16 14 16 17 13 14 17 13 17 18 13 18 19</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Andy Harris Custom Cycles" type="NODE">
+        <instance_geometry url="#geo_Andy Harris Custom Cycles">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

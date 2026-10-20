@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Maldon Town Hall" name="Maldon Town Hall">
+      <mesh>
+        <source id="geo_Maldon Town Hall_pos">
+          <float_array id="geo_Maldon Town Hall_pos_arr" count="102">1017.405 36.931 28.764 1019.966 50.546 28.764 1026.174 49.546 28.764 1027.000 54.291 28.764 1033.113 53.180 28.764 1033.209 54.014 28.764 1046.343 52.547 28.764 1047.004 52.469 28.764 1045.634 44.611 28.764 1046.728 44.333 28.764 1045.723 38.665 28.764 1044.078 38.943 28.764 1042.922 33.375 28.764 1032.548 35.198 28.764 1025.527 36.587 28.764 1025.307 34.542 28.764 1020.902 36.598 28.764 1017.405 36.931 36.764 1019.966 50.546 36.764 1026.174 49.546 36.764 1027.000 54.291 36.764 1033.113 53.180 36.764 1033.209 54.014 36.764 1046.343 52.547 36.764 1047.004 52.469 36.764 1045.634 44.611 36.764 1046.728 44.333 36.764 1045.723 38.665 36.764 1044.078 38.943 36.764 1042.922 33.375 36.764 1032.548 35.198 36.764 1025.527 36.587 36.764 1025.307 34.542 36.764 1020.902 36.598 36.764</float_array>
+          <technique_common>
+            <accessor source="#geo_Maldon Town Hall_pos_arr" count="34" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Maldon Town Hall_verts">
+          <input semantic="POSITION" source="#geo_Maldon Town Hall_pos"/>
+        </vertices>
+        <triangles count="49" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Maldon Town Hall_verts" offset="0"/>
+          <p>0 1 18 0 18 17 1 2 19 1 19 18 2 3 20 2 20 19 3 4 21 3 21 20 4 5 22 4 22 21 5 6 23 5 23 22 6 7 24 6 24 23 7 8 25 7 25 24 8 9 26 8 26 25 9 10 27 9 27 26 10 11 28 10 28 27 11 12 29 11 29 28 12 13 30 12 30 29 13 14 31 13 31 30 14 15 32 14 32 31 15 16 33 15 33 32 16 0 17 16 17 33 33 18 17 33 19 18 19 21 20 33 21 19 21 23 22 33 23 21 33 24 23 33 25 24 33 26 25 26 28 27 33 28 26 28 30 29 28 31 30 33 31 28 31 33 32</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Maldon Town Hall" type="NODE">
+        <instance_geometry url="#geo_Maldon Town Hall">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

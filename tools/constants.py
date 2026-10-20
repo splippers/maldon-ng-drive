@@ -42,6 +42,13 @@ MAP_VERSION = _cfg.MAP_VERSION
 MAP_DESC    = _cfg.MAP_DESC
 MAP_AUTHOR  = getattr(_cfg, "MAP_AUTHOR", "ng-drive-network")
 
+# Optional LevelInfo metadata (see level_builder.write_info_json)
+MAP_BIOME       = getattr(_cfg, "MAP_BIOME", "English Countryside")
+MAP_ROADS       = getattr(_cfg, "MAP_ROADS", "OSM road network")
+MAP_SUITABLEFOR = getattr(_cfg, "MAP_SUITABLEFOR", "Free Roam")
+MAP_FEATURES    = getattr(_cfg, "MAP_FEATURES", "OSM roads, LiDAR terrain")
+SPAWN_LABELS    = getattr(_cfg, "SPAWN_LABELS", {})
+
 # ── Paths ──────────────────────────────────────────────────────────────────────
 ROOT       = _ROOT
 DATA_DIR   = ROOT / "data"
@@ -51,6 +58,11 @@ TERRAIN_DIR = LEVELS_DIR / "terrainGrid"
 OSM_CACHE  = DATA_DIR / f"{MAP_NAME}_osm.json"
 SRTM_CACHE = DATA_DIR / f"{MAP_NAME}_srtm_32x32.json"
 
+# Environment Agency LiDAR DTM (see tools/lidar.py) — England only.
+LIDAR_DIR        = DATA_DIR / "lidar"
+LIDAR_TIF_CACHE  = LIDAR_DIR / f"{MAP_NAME}_dtm_2m.tif"
+LIDAR_GRID_CACHE = DATA_DIR / f"{MAP_NAME}_lidar_1025.npy"
+
 # ── GPS anchor ────────────────────────────────────────────────────────────────
 CENTER_LAT = _cfg.CENTER_LAT
 CENTER_LON = _cfg.CENTER_LON
@@ -59,6 +71,10 @@ BBOX       = _cfg.BBOX   # (S, W, N, E)
 # ── Projection ────────────────────────────────────────────────────────────────
 _LAT_SCALE = 111_139.0
 _LON_SCALE = 111_139.0 * math.cos(math.radians(CENTER_LAT))
+
+# Public aliases (used by heightmap/lidar resampling)
+LAT_SCALE = _LAT_SCALE
+LON_SCALE = _LON_SCALE
 
 
 def gps_to_world(lat: float, lon: float) -> tuple[float, float]:

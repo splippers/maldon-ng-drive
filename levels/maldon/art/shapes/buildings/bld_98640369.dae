@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_The Moot Hall" name="The Moot Hall">
+      <mesh>
+        <source id="geo_The Moot Hall_pos">
+          <float_array id="geo_The Moot Hall_pos_arr" count="114">960.273 35.209 31.221 960.273 39.054 31.221 966.241 39.065 31.221 965.704 30.630 31.221 969.139 30.241 31.221 970.192 30.308 31.221 971.101 30.019 31.221 971.699 29.352 31.221 971.796 28.407 31.221 971.582 27.529 31.221 971.101 26.784 31.221 970.192 26.496 31.221 969.187 26.496 31.221 968.905 21.039 31.221 968.347 16.649 31.221 960.858 17.204 31.221 961.223 20.650 31.221 961.629 26.118 31.221 959.206 26.240 31.221 960.273 35.209 39.221 960.273 39.054 39.221 966.241 39.065 39.221 965.704 30.630 39.221 969.139 30.241 39.221 970.192 30.308 39.221 971.101 30.019 39.221 971.699 29.352 39.221 971.796 28.407 39.221 971.582 27.529 39.221 971.101 26.784 39.221 970.192 26.496 39.221 969.187 26.496 39.221 968.905 21.039 39.221 968.347 16.649 39.221 960.858 17.204 39.221 961.223 20.650 39.221 961.629 26.118 39.221 959.206 26.240 39.221</float_array>
+          <technique_common>
+            <accessor source="#geo_The Moot Hall_pos_arr" count="38" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_The Moot Hall_verts">
+          <input semantic="POSITION" source="#geo_The Moot Hall_pos"/>
+        </vertices>
+        <triangles count="55" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_The Moot Hall_verts" offset="0"/>
+          <p>0 1 20 0 20 19 1 2 21 1 21 20 2 3 22 2 22 21 3 4 23 3 23 22 4 5 24 4 24 23 5 6 25 5 25 24 6 7 26 6 26 25 7 8 27 7 27 26 8 9 28 8 28 27 9 10 29 9 29 28 10 11 30 10 30 29 11 12 31 11 31 30 12 13 32 12 32 31 13 14 33 13 33 32 14 15 34 14 34 33 15 16 35 15 35 34 16 17 36 16 36 35 17 18 37 17 37 36 18 0 19 18 19 37 19 21 20 37 21 19 37 22 21 37 23 22 37 24 23 37 25 24 37 26 25 37 27 26 37 28 27 37 29 28 29 31 30 37 31 29 31 33 32 31 34 33 31 35 34 31 36 35 31 37 36</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="The Moot Hall" type="NODE">
+        <instance_geometry url="#geo_The Moot Hall">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>

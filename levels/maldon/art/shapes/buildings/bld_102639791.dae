@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_materials>
+    <material id="Mat_building" name="building">
+      <instance_effect url="#Mat_building_effect"/>
+    </material>
+  </library_materials>
+  <library_effects>
+    <effect id="Mat_building_effect">
+      <profile_COMMON>
+        <technique sid="common">
+          <phong>
+            <diffuse><color>0.72 0.65 0.55 1</color></diffuse>
+            <specular><color>0.05 0.05 0.05 1</color></specular>
+          </phong>
+        </technique>
+      </profile_COMMON>
+    </effect>
+  </library_effects>
+  <library_geometries>
+    <geometry id="geo_Crematorium" name="Crematorium">
+      <mesh>
+        <source id="geo_Crematorium_pos">
+          <float_array id="geo_Crematorium_pos_arr" count="84">-10.745 59.304 33.821 -5.940 59.426 33.821 -5.823 54.880 33.821 -3.634 54.936 33.821 -3.483 48.868 33.821 -4.536 48.834 33.821 -4.419 44.367 33.821 -7.998 44.278 33.821 -8.109 48.546 33.821 -12.851 48.423 33.821 -12.920 51.180 33.821 -15.302 51.113 33.821 -15.371 53.902 33.821 -10.614 54.025 33.821 -10.745 59.304 41.821 -5.940 59.426 41.821 -5.823 54.880 41.821 -3.634 54.936 41.821 -3.483 48.868 41.821 -4.536 48.834 41.821 -4.419 44.367 41.821 -7.998 44.278 41.821 -8.109 48.546 41.821 -12.851 48.423 41.821 -12.920 51.180 41.821 -15.302 51.113 41.821 -15.371 53.902 41.821 -10.614 54.025 41.821</float_array>
+          <technique_common>
+            <accessor source="#geo_Crematorium_pos_arr" count="28" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="geo_Crematorium_verts">
+          <input semantic="POSITION" source="#geo_Crematorium_pos"/>
+        </vertices>
+        <triangles count="40" material="Mat_building">
+          <input semantic="VERTEX" source="#geo_Crematorium_verts" offset="0"/>
+          <p>0 1 15 0 15 14 1 2 16 1 16 15 2 3 17 2 17 16 3 4 18 3 18 17 4 5 19 4 19 18 5 6 20 5 20 19 6 7 21 6 21 20 7 8 22 7 22 21 8 9 23 8 23 22 9 10 24 9 24 23 10 11 25 10 25 24 11 12 26 11 26 25 12 13 27 12 27 26 13 0 14 13 14 27 27 15 14 27 16 15 27 17 16 27 18 17 27 19 18 27 20 19 20 22 21 27 22 20 27 23 22 27 24 23 27 25 24 25 27 26</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Building" name="Crematorium" type="NODE">
+        <instance_geometry url="#geo_Crematorium">
+          <bind_material>
+            <technique_common>
+              <instance_material symbol="Mat_building" target="#Mat_building"/>
+            </technique_common>
+          </bind_material>
+        </instance_geometry>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>
