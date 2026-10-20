@@ -17,3 +17,6 @@ data/maldon_lidar_1025.npy
 
 # Generated photo composites
 data/photos/composite/
+
+# Mapillary street-level imagery (CC-BY-SA) — fetched on demand
+data/photos/mapillary/

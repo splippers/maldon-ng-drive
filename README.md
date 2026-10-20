@@ -73,6 +73,23 @@ the mid-line. Point elements are emitted as `TSStatic` placeholders (blank
 `shapeName`) in the `GameElements` group, ready to be given meshes in the
 World Editor.
 
+## Street-level imagery (optional)
+
+Maldon can pull CC-BY-SA licensed street-level photos from
+[Mapillary](https://www.mapillary.com/) and place them as in-world
+billboards (same pipeline as the historical photo spots):
+
+```bash
+export MAPILLARY_ACCESS_TOKEN=MLY|...
+python3 tools/fetch_streetview.py --max 40      # fetch + cache + update manifest
+# or, integrated into a full build:
+python3 tools/generate.py --streetview --zip
+```
+
+Without a token the step is skipped. Downloaded images live under
+`data/photos/mapillary/` (gitignored) and attribution is written to
+`data/photos/mapillary/ATTRIBUTION.txt`.
+
 ## Tests
 
 ```bash
