@@ -37,9 +37,12 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent.resolve()
 sys.path.insert(0, str(ROOT))
 
-from tools.constants       import MAP_NAME, MAP_VERSION, LEVELS_DIR, TERRAIN_DIR
+from tools.constants       import MAP_NAME, MAP_VERSION, LEVELS_DIR, TERRAIN_DIR, BLOCK_SIZE
 from tools.heightmap       import build_elevation, elev_at_world
-from tools.terrain_file    import write_ter, write_heightmap_png, write_preview_png
+from tools.terrain_file    import (write_ter, write_heightmap_png, write_preview_png,
+                                   write_terrain_json,
+                                   TERRAIN_LAYER_NAME, SATELLITE_LAYER_NAME)
+from tools.terrain_materials import write_terrain_materials
 from tools.osm_roads       import build_roads
 from tools.osm_parse       import load as parse_osm
 from tools.buildings       import build_building_objects
@@ -97,6 +100,13 @@ def main(
     write_ter(TER_FILE, elev, use_satellite=has_sat)
     write_heightmap_png(HEIGHT_PNG, elev)
     write_preview_png(PREVIEW, elev)
+
+    materials = [SATELLITE_LAYER_NAME if has_sat else TERRAIN_LAYER_NAME]
+    write_terrain_json(TERRAIN_DIR / f"{MAP_NAME}.terrain.json",
+                       f"/levels/{MAP_NAME}/terrainGrid/{MAP_NAME}.ter",
+                       BLOCK_SIZE, materials,
+                       heightmap_image=f"/levels/{MAP_NAME}/terrainGrid/{MAP_NAME}_height.png")
+    write_terrain_materials(LEVELS_DIR, MAP_NAME, materials)
 
     # 4. OSM data
     log.info("Step 4/9 – parse OSM data")

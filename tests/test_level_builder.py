@@ -32,6 +32,13 @@ def test_square_size_is_metres_per_sample():
     assert t["squareSize"] == SQUARE_SIZE
 
 
+def test_max_height_matches_terrain_encoder():
+    """The engine scales stored heights by maxHeight/65536, so the
+    TerrainBlock must declare the height the .ter was encoded against."""
+    from tools.constants import MAX_TERRAIN_HEIGHT
+    assert _terrain()["maxHeight"] == MAX_TERRAIN_HEIGHT
+
+
 def test_position_is_south_west_corner():
     """position is the SW corner of the grid, and .ter row 0 = south edge,
     so sample (r, c) lands at world (-WORLD_HALF + c*sq, -WORLD_HALF + r*sq)."""

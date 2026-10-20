@@ -6,7 +6,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from tools.terrain_file import write_ter, write_heightmap_png, write_preview_png
+from tools.terrain_file import (write_ter, write_heightmap_png, write_preview_png,
+                                write_terrain_json)
 from tools.constants import BLOCK_SIZE, GRID_SIZE, MAX_TERRAIN_HEIGHT, SQUARE_SIZE
 
 
@@ -135,6 +136,48 @@ class TestWriteTerLayermap:
         write_ter(p, flat_elev)
         d = _read_ter(p)
         assert len(d["layermap"]) == len(d["heights"])
+
+
+class TestWriteTerrainJson:
+    def _write(self, tmp_path, **kw):
+        p = tmp_path / "sub" / "t.terrain.json"
+        meta = write_terrain_json(p, "/levels/m/terrainGrid/m.ter",
+                                  BLOCK_SIZE, ["m_grass"], **kw)
+        return p, meta
+
+    def test_creates_file_and_parents(self, tmp_path):
+        p, _ = self._write(tmp_path)
+        assert p.is_file()
+
+    def test_version_and_size(self, tmp_path):
+        _, meta = self._write(tmp_path)
+        assert meta["version"] == 9
+        assert meta["size"] == BLOCK_SIZE
+
+    def test_sample_counts_match_size(self, tmp_path):
+        _, meta = self._write(tmp_path)
+        n = BLOCK_SIZE ** 2
+        assert meta["heightMapSize"] == n and meta["heightMapItemSize"] == 2
+        assert meta["layerMapSize"] == n and meta["layerMapItemSize"] == 1
+
+    def test_materials_round_trip(self, tmp_path):
+        _, meta = self._write(tmp_path)
+        assert meta["materials"] == ["m_grass"]
+
+    def test_datafile_recorded(self, tmp_path):
+        _, meta = self._write(tmp_path)
+        assert meta["datafile"].endswith("m.ter")
+
+    def test_heightmap_image_optional(self, tmp_path):
+        _, meta = self._write(tmp_path)
+        assert "heightmapImage" not in meta
+        _, meta2 = self._write(tmp_path, heightmap_image="/levels/m/h.png")
+        assert meta2["heightmapImage"] == "/levels/m/h.png"
+
+    def test_file_is_valid_json(self, tmp_path):
+        import json
+        p, _ = self._write(tmp_path)
+        assert json.loads(p.read_text(encoding="utf-8"))["version"] == 9
 
 
 class TestWriteTerMisc:

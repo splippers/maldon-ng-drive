@@ -24,6 +24,7 @@ grid is flipped south-to-north. This matches the TerrainBlock placement at
 
 from __future__ import annotations
 
+import json
 import struct
 import logging
 from pathlib import Path
@@ -93,6 +94,51 @@ def write_ter(path: Path | str,
 
     size_mb = path.stat().st_size / 1_048_576
     log.info("Wrote %s (%.1f MB)", path, size_mb)
+
+
+def write_terrain_json(path: Path | str,
+                       datafile: str,
+                       size: int,
+                       materials: list[str],
+                       heightmap_image: str | None = None) -> dict:
+    """
+    Write the companion `.terrain.json` metadata file.
+
+    This file is descriptive only (the engine loads terrain data from the
+    `.ter`) but the engine writes one on save and tools expect it, so we
+    mirror the documented minimal layout.
+
+    Parameters
+    ----------
+    path            : destination file path
+    datafile        : virtual path of the `.ter` this describes
+    size            : terrain grid size (samples per side)
+    materials       : terrain material internal names, in layer-map order
+    heightmap_image : optional virtual path of the exported heightmap PNG
+    """
+    n = size * size
+    meta = {
+        "version": 9,
+        "datafile": datafile,
+        "size": size,
+        "binaryFormat": ("version(char), size(unsigned int), "
+                         "heightMap(heightMapSize * heightMapItemSize), "
+                         "layerMap(layerMapSize * layerMapItemSize), "
+                         "materialNames"),
+        "heightMapSize": n,
+        "heightMapItemSize": 2,
+        "layerMapSize": n,
+        "layerMapItemSize": 1,
+        "materials": list(materials),
+    }
+    if heightmap_image:
+        meta["heightmapImage"] = heightmap_image
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    log.info("Wrote %s", path)
+    return meta
 
 
 def write_heightmap_png(path: Path | str,

@@ -1,0 +1,14 @@
+{
+  "version": 9,
+  "datafile": "/levels/maldon/terrainGrid/maldon.ter",
+  "size": 1024,
+  "binaryFormat": "version(char), size(unsigned int), heightMap(heightMapSize * heightMapItemSize), layerMap(layerMapSize * layerMapItemSize), materialNames",
+  "heightMapSize": 1048576,
+  "heightMapItemSize": 2,
+  "layerMapSize": 1048576,
+  "layerMapItemSize": 1,
+  "materials": [
+    "maldon_grass"
+  ],
+  "heightmapImage": "/levels/maldon/terrainGrid/maldon_height.png"
+}
